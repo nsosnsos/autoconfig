@@ -24,6 +24,11 @@ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sun
 
 sudo apt-get install vim vim-scripts vim-doc vim-addon-manager
 sudo apt-get install ctags cscope tree
+vim-addons install omnicppcomplete
+vim-addons install minibufexplorer
+vim-addons install winmanager
+vim-addons install project
+vim-addons install taglist
 
 sudo chmod 666 /etc/pip.conf
 sudo echo [global] > /etc/pip.conf
