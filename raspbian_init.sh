@@ -22,6 +22,9 @@ sudo ntpdate -u ntp.ubuntu.com
 sudo apt-get install ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
 sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
 
+sudo apt-get install vim vim-scripts vim-doc vim-addon-manager
+sudo apt-get install ctags cscope tree
+
 sudo chmod 666 /etc/pip.conf
 sudo echo [global] > /etc/pip.conf
 sudo echo index-url = https://pypi.tuna.tsinghua.edu.cn/simple >> /etc/pip.conf
