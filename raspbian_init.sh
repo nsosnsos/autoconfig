@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 sudo chmod 666 /etc/apt/sources.list
 sudo echo deb https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi > /etc/apt/sources.list
 sudo chmod 644 /etc/apt/sources.list
@@ -7,6 +7,7 @@ sudo echo # deb https://archive.raspberrypi.org/debian/ buster main > /etc/apt/s
 sudo echo # deb-src https://archive.raspberrypi.org/debian/ buster main >> /etc/apt/sources.list.d/raspi.list
 sudo chmod 644 /etc/apt/sources.list.d/raspi.list
 sudo apt-get update && sudo apt-get dist-upgrade -y
+sudo apt-get autoremove
 sudo rpi-update
 sudo rpi-eeprom-update -a
 
@@ -14,7 +15,6 @@ sudo passwd root
 su root
 exit
 
-sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev
 sudo apt-get install xrdp
 sudo apt-get install ntpdate
 sudo ntpdate -u ntp.ubuntu.com
@@ -45,4 +45,8 @@ sudo pip3 install --upgrade pip
 rm -rf /usr/bin/pip3
 ln -s /usr/local/bin/pip3 /usr/bin/pip3
 
+sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev libblas-dev liblapack-dev gfortran
 sudo pip3 install pandas numpy scipy tensorflow matplotlib
+
+ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
+cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
