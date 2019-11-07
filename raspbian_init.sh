@@ -34,7 +34,7 @@ sudo chmod 666 /etc/pip.conf
 sudo echo [global] > /etc/pip.conf
 sudo echo index-url = https://pypi.tuna.tsinghua.edu.cn/simple >> /etc/pip.conf
 sudo echo trusted-host = pypi.tuna.tsinghua.edu.cn >> /etc/pip.conf
-sudo echo extra-index-url = https://www.piwheels.org/simple https://pypi.python.org/simple >> /etc/pip.conf
+sudo echo extra-index-url = https://www.piwheels.org/simple https://pypi.org/simple >> /etc/pip.conf
 sudo chmod 644 /etc/pip.conf
 
 sudo apt-get install python3-pip
@@ -51,4 +51,3 @@ sudo pip3 install pandas numpy scipy tensorflow matplotlib
 
 ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
 cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
-
