@@ -34,19 +34,21 @@ sudo chmod 666 /etc/pip.conf
 sudo echo [global] > /etc/pip.conf
 sudo echo index-url = https://pypi.tuna.tsinghua.edu.cn/simple >> /etc/pip.conf
 sudo echo trusted-host = pypi.tuna.tsinghua.edu.cn >> /etc/pip.conf
-sudo echo # extra-index-url = https://www.piwheels.org/simple >> /etc/pip.conf
+sudo echo extra-index-url = https://www.piwheels.org/simple https://pypi.python.org/simple >> /etc/pip.conf
 sudo chmod 644 /etc/pip.conf
 
-sudo pip3 install --upgrade pip
+sudo apt-get install python3-pip
+# sudo pip3 install --upgrade pip
 # curl https://files.pythonhosted.org/packages/ce/ea/9b445176a65ae4ba22dce1d93e4b5fe182f953df71a145f557cffaffc1bf/pip-19.3.1.tar.gz
 # tar -zxvf pip-19.3.1.tar.gz
 # cd pip-19.3.1 && python3 setup.py install
 # cd ~ && sudo rm -rf ~/Downloads/pip-19.3.1
-rm -rf /usr/bin/pip3
-ln -s /usr/local/bin/pip3 /usr/bin/pip3
+# rm -rf /usr/bin/pip3
+# ln -s /usr/local/bin/pip3 /usr/bin/pip3
 
-sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev libblas-dev liblapack-dev gfortran
+sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev libblas-dev liblapack-dev libatlas-base-dev gfortran
 sudo pip3 install pandas numpy scipy tensorflow matplotlib
 
 ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
 cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+
