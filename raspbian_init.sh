@@ -47,6 +47,7 @@ sudo apt-get install python3-pip
 # ln -s /usr/local/bin/pip3 /usr/bin/pip3
 
 sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev libhdf5-dev libblas-dev liblapack-dev libatlas-base-dev gfortran
+sudo pip3 install wrapt --ignore-installed
 sudo pip3 install pandas numpy scipy tensorflow matplotlib
 
 ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
