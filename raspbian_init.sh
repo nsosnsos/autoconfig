@@ -53,5 +53,6 @@ git config --global user.name "nsosnsos"
 git config --global user.email "nsosnsos@gmail.com"
 git config --global credential.helper store
 git config --global commit.template ~/.gitmessage
+git config --global core.excludesFile ~/.gitignore
 git config --global core.editor vim
 git config --global merge.tool vimdiff
