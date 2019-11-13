@@ -38,13 +38,9 @@ sudo echo extra-index-url = https://www.piwheels.org/simple https://pypi.org/sim
 sudo chmod 644 /etc/pip.conf
 
 sudo apt-get install python3-pip
-# sudo pip3 install --upgrade pip
-# curl https://files.pythonhosted.org/packages/ce/ea/9b445176a65ae4ba22dce1d93e4b5fe182f953df71a145f557cffaffc1bf/pip-19.3.1.tar.gz
-# tar -zxvf pip-19.3.1.tar.gz
-# cd pip-19.3.1 && python3 setup.py install
-# cd ~ && sudo rm -rf ~/Downloads/pip-19.3.1
-# rm -rf /usr/bin/pip3
-# ln -s /usr/local/bin/pip3 /usr/bin/pip3
+sudo pip3 install --upgrade pip
+rm -rf /usr/bin/pip3
+ln -s /usr/local/bin/pip3 /usr/bin/pip3
 
 sudo apt-get install python3-dev libxml2-dev libxslt1-dev zlib1g-dev libhdf5-dev libblas-dev liblapack-dev libatlas-base-dev gfortran
 sudo pip3 install wrapt --ignore-installed
@@ -52,3 +48,10 @@ sudo pip3 install pandas numpy scipy tensorflow matplotlib
 
 ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
 cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+
+git config --global user.name "nsosnsos"
+git config --global user.email "nsosnsos@gmail.com"
+git config --global credential.helper store
+git config --global commit.template ~/.gitmessage
+git config --global core.editor vim
+git config --global merge.tool vimdiff
