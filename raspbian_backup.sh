@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
+set -e
+set -x
 
 echo "==================== STAGE 1 ===================="
 sudo apt-get -y install rsync dosfstools parted kpartx exfat-fuse
 
 backup_dir=/mnt
-if [ -z $1 ]; then
-	echo "We need portable device for backup, is it /dev/sda1 ? Y/N"
+if [ "$#" -lt 1 ]; then
+	echo "We need portable device for backup, is it /dev/sda ? Y/N"
 	read answer
 	if [ "$answer" = "y" -o "$answer" = "Y" ]; then
-		sudo mount -o uid=1000 /dev/sda1 $backup_dir
+		sudo mount -o uid=1000 /dev/sda $backup_dir
 	else
-		echo "Usage: $0 /dev/sda1 (check with \"fdisk -l\")"
+		echo "Usage: $0 /dev/sda (check with \"fdisk -l\")"
 		exit 0
 	fi
 else
@@ -27,8 +29,8 @@ echo "==================== STAGE 2 ===================="
 backup_img=$backup_dir/raspbian_`date +%Y%m%d%H%M%S`.img
 boot_size=`df -P | grep /boot | awk '{print $2}'`
 root_size=`df -P | grep /dev/root | awk '{print $3}'`
-total_size=`echo $boot_size $root_size | awk '{print int(($1+$2)*1.3)}'`
-sudo dd if=/dev/zero of=$img bs=32M count=$total_size
+total_size=`echo $boot_size $root_size | awk '{print int(($1+$2)*1.3/1024)}'`
+sudo dd if=/dev/zero of=$backup_img bs=1M count=$total_size
 
 boot_start=`sudo fdisk -l /dev/mmcblk0 | grep mmcblk0p1 | awk '{print $2}'`
 boot_end=`sudo fdisk -l /dev/mmcblk0 | grep mmcblk0p1 | awk '{print $3}'`
@@ -40,8 +42,9 @@ sudo parted $backup_img --script -- mklabel msdos
 sudo parted $backup_img --script -- mkpart primary fat32 ${boot_start}s ${boot_end}s
 sudo parted $backup_img --script -- mkpart primary ext4 ${root_start}s -1
 loop_device=`sudo losetup -f --show $backup_img`
+sleep 5
 device=/dev/mapper/`sudo kpartx -va $loop_device | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
-sleep 10
+sleep 15
 sudo mkfs.vfat ${device}p1 -n boot
 sudo mkfs.ext4 ${device}p2
 echo "Partition is done for backup image."
@@ -68,7 +71,7 @@ if [ -f /etc/dphys-swapfile ]; then
 	EXCLUDE_SWAPFILE="--exclude $SWAPFILE"
 fi
 
-sudo rsync --force -rltWDEgop --delete --stats --progress \
+sudo rsync --force -rltWDEHXAgoptx --delete --stats --progress \
 	$EXCLUDE_SWAPFILE \
 	--exclude '.gvfs' \
 	--exclude '/dev' \
@@ -80,7 +83,7 @@ sudo rsync --force -rltWDEgop --delete --stats --progress \
 	--exclude '/tmp' \
     --exclude 'lost\+found' \
 	--exclude '$backup_dir' \
-	// $mount_root
+	/ $mount_root
 
 for i in dev media mnt proc run sys boot; do
 	if [ ! -d $mount_root/$i ]; then
@@ -97,16 +100,16 @@ sync
 echo "$mount_root is done."
 
 echo "==================== STAGE 5 ===================="
-origin_partition_uuid_boot=`blkid -o export /dev/mmcblk0p1 | grep PARTUUID`
-origin_partition_uuid_root=`blkid -o export /dev/mmcblk0p2 | grep PARTUUID`
-backup_partition_uuid_boot=`blkid -o export ${device}p1 | grep PARTUUID`
-backup_partition_uuid_root=`blkid -o export ${device}p2 | grep PARTUUID`
+origin_partition_uuid_boot=`sudo blkid -o export /dev/mmcblk0p1 | grep PARTUUID`
+origin_partition_uuid_root=`sudo blkid -o export /dev/mmcblk0p2 | grep PARTUUID`
+backup_partition_uuid_boot=`sudo blkid -o export ${device}p1 | grep PARTUUID`
+backup_partition_uuid_root=`sudo blkid -o export ${device}p2 | grep PARTUUID`
 sudo sed -i "s/$origin_partition_uuid_root/$backup_partition_uuid_root/g" $mount_boot/cmdline.txt
 sudo sed -i "s/$origin_partition_uuid_boot/$backup_partition_uuid_boot/g" $mount_root/etc/fstab
 sudo sed -i "s/$origin_partition_uuid_root/$backup_partition_uuid_root/g" $mount_root/etc/fstab
 echo "Uuid of image partitions are modified."
 
-echo "==================== STAGE 5 ===================="
+echo "==================== STAGE 6 ===================="
 sudo umount $mount_boot
 sudo umount $mount_root
 
