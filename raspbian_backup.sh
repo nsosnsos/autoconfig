@@ -41,10 +41,11 @@ echo "/boot:[$boot_start - $boot_end]  root:[$root_start : $root_end]"
 sudo parted $backup_img --script -- mklabel msdos
 sudo parted $backup_img --script -- mkpart primary fat32 ${boot_start}s ${boot_end}s
 sudo parted $backup_img --script -- mkpart primary ext4 ${root_start}s -1
+sleep 5
 loop_device=`sudo losetup -f --show $backup_img`
 sleep 5
 device=/dev/mapper/`sudo kpartx -va $loop_device | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
-sleep 15
+sleep 5
 sudo mkfs.vfat ${device}p1 -n boot
 sudo mkfs.ext4 ${device}p2
 echo "Partition is done for backup image."
@@ -117,4 +118,5 @@ sudo kpartx -d $loop_device
 sudo losetup -d $loop_device
 sudo umount $backup_dir
 rm -rf $mount_boot $mount_root
-echo "$backup_img completed!"
+echo "$backup_img is generated!\nRaspbian backup task is done!"
+
