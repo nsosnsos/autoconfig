@@ -56,3 +56,12 @@ git config --global commit.template ~/.gitmessage
 git config --global core.excludesFile ~/.gitignore
 git config --global core.editor vim
 git config --global merge.tool vimdiff
+
+sudo apt-get install mariadb-server
+sudo mysql << EOF
+USE mysql;
+UPDATE user SET password=password('root') WHERE user='root';
+UPDATE user SET plugin='mysql_native_password' WHERE user='root';
+FLUSH PRIVILEGES;
+EXIT;
+EOF
