@@ -81,7 +81,7 @@ alias vi='vim'
 alias df='df -h'
 alias du='du -h'
 # timezone settings
-export TZ='Asia/Shanghai'
+export TZ='Asia/Hong_Kong'
 EOF
 
 update-ca-certificates
