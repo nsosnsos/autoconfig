@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
+set -e
+set -x
+
+# ssh-keygen -b 2048 -t rsa -f rsa2048 << 'EOF'
+# EOF
+
 addgroup guest
 adduser --home /home/guest --shell /bin/bash --ingroup guest guest << 'EOF'
 password
 password
 Y
-EOF
-
-ssh-keygen -b 2048 -t rsa -f rsa2048 << 'EOF'
 EOF
 
 cat > ~/.gitconfig <<EOF
@@ -30,27 +33,10 @@ cat > ~/.gitconfig <<EOF
 	helper = wincred
 [push]
 	default = simple
+[commit]
+	template = ~/.gitmessage
 EOF
 
-cat > ~/.gitignore <<EOF
-*.o
-*.obj
-*.a
-*.so
-*.bin
-*.elf
-*.bat
-*.log
-*.txt
-*.gz
-*.tar
-*.zip
-*.gz2
-*.gzip
-.pyc
-__pycache__
-.*
-EOF
 
 cat > ~/.bashrc <<EOF
 #!/bin/bash
@@ -84,8 +70,6 @@ alias du='du -h'
 export TZ='Asia/Hong_Kong'
 EOF
 
-update-ca-certificates
-
 echo "===== host config ====="
 old_hostname=`hostname | tr ' ' ','`
 read -p "set new hostname: " hostname
@@ -94,21 +78,13 @@ hostname $hostname
 sed -i "s/${old_hostname}/${hostname}/g" /etc/hosts
 
 host_ip=`ip -f inet addr | grep global | awk '{print $2}' | awk -F/ '{print $1}' | tr '\n' ','`
+echo "${host_ip}"
 host_escape_password=`echo -ne $password| xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g'`
 
-MASTERHOST=master_hostname
-HDFSHOME=/hdfs
 
-source ~/.bashrc
-
-set -e
-set -x
-
-echo "===== apt packages installation ====="
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-apt-get update
+echo "===== basic packages installation ====="
+apt-get update && apt-get upgrade -y
 apt-get install apt-transport-https
-apt-get update
 apt-get install vim vim-scripts vim-doc vim-addon-manager
 apt-get install ctags cscope tree
 
@@ -189,6 +165,8 @@ echo "xferlog_std_format=YES" >> /etc/vsftpd.conf
 sudo systemctl restart vsftpd
 
 echo "===== docker installation ====="
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+apt-get update
 apt-get install docker-engine
 systemctl enable docker
 service docker start
@@ -239,6 +217,8 @@ CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
 PATH=${PATH}:${JAVA_HOME}/bin
 
 echo "===== hadoop installation ====="
+MASTERHOST=master_hostname
+HDFSHOME=/hdfs
 cd dockerk8s
 curl -O http://apache.communilink.net/hadoop/common/hadoop-2.8.5/hadoop-2.8.5.tar.gz
 addgroup hadoop
