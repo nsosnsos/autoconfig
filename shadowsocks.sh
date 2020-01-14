@@ -1,10 +1,10 @@
-# !/bin/bash
+# !/usr/bin/env bash
 
 set -e
 set -x
 
 config_file=/home/ubuntu/shadowsocks.conf
-service_file=/etc/systemd/system/shadowsocks
+service_file=/etc/systemd/system/shadowsocks.service
 
 sudo apt-get update && sudo apt-get upgrade -y
 sudo pip3 install --upgrade pip
