@@ -65,3 +65,12 @@ UPDATE user SET plugin='mysql_native_password' WHERE user='root';
 FLUSH PRIVILEGES;
 EXIT;
 EOF
+
+sudo apt-get install shadowsocks-qt5
+sudo cat > ~/proxy.sh <<EOF
+export http_proxy="socks5://127.0.0.1:1080"
+export https_proxy="socks5://127.0.0.1:1080"
+export no_proxy="localhost, 127.0.0.1, 192.168.*"
+EOF
+chmod u+x ~/proxy.sh
+echo "alias chrome='chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\"'" >> ~/.bashrc
