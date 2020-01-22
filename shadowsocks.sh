@@ -47,5 +47,3 @@ sudo chmod 644 ${service_file}
 sudo systemctl daemon-reload
 sudo systemctl enable shadowsocks
 sudo systemctl start shadowsocks
-
-echo "alias chrome='chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\"'" >> ~/.bashrc
