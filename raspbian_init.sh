@@ -57,6 +57,11 @@ git config --global core.excludesFile ~/.gitignore
 git config --global core.editor vim
 git config --global merge.tool vimdiff
 
+sudo apt-get install -y nginx
+sudo rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
+sudo systemctl enable nginx
+sudo ststemctl start nginx
+
 sudo apt-get install -y mariadb-server
 sudo mysql << EOF
 USE mysql;
