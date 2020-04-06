@@ -79,4 +79,4 @@ export https_proxy="socks5://127.0.0.1:1080"
 export no_proxy="localhost, 127.0.0.1, 192.168.*"
 EOF
 chmod u+x ~/proxy.sh
-echo "alias chrome='chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\" > /dev/null 2>&1 &'" >> ~/.bashrc
+echo "alias chrome='nohup chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\" > /dev/null 2>&1 &'" >> ~/.bashrc
