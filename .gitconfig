@@ -25,7 +25,7 @@
 	default = simple
 
 [commit]
-	template = ~/commit.template
+	template = ~/.gitmessage
 
 #git config --global user.name "shenan"
 #git config --global user.email "nsosnsos@gmail.com"
