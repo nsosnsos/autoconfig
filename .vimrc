@@ -17,6 +17,7 @@ set softtabstop=4
 set shiftwidth=4
 set history=50
 set mouse=a
+set expandtab
  
 "--- search config ---
 set ignorecase smartcase
