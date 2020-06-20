@@ -1,0 +1,38 @@
+[user]
+	name = shenan
+	email = nsosnsos@gmail.com
+
+[color]
+	ui = true
+
+[core]
+	editor = vim
+	quotepath = false
+	autocrlf = false
+	excludesfile = ~/.gitignore
+
+[merge]
+	tool = vimdiff
+
+[i18n]
+	commitencoding = utf-8
+	logoutputencoding = utf-8
+
+[credential]
+	helper = wincred
+
+[push]
+	default = simple
+
+[commit]
+	template = ~/commit.template
+
+#git config --global user.name "shenan"
+#git config --global user.email "nsosnsos@gmail.com"
+#git config --global core.editor vim
+#git config --global core.quotepath false
+#git config --global core.autocrlf false
+#git config --global merge.tool vimdiff
+#git config --global i18n.commitencoding utf-8
+#git config --global i18n.logoutputencoding utf-8
+#git config --global credential.helper wincred
