@@ -8,7 +8,7 @@
 [core]
 	editor = vim
 	quotepath = false
-	autocrlf = false
+	autocrlf = input
 	excludesfile = ~/.gitignore
 
 [merge]
