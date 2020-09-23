@@ -35,7 +35,7 @@ def recursive_process(file_path, ext_list):
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        print("Usage: dos2unix file_path ext_list")
+        print("Usage: dos2unix file_path [ext_list]")
         sys.exit(-1)
     exclude_list = []
     if len(sys.argv) > 1:
