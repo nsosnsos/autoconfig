@@ -1,18 +1,19 @@
 # !/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+import re
 import os
 import sys
 
 
 def dos2unix(file_name):
-    with open(file_name, "w+") as f:
-        print("file_name: {}".format(file_name))
-        lines = f.readlines()
-        f.seek(0, 0)
-        for line in lines:
-            printf("line={}".format(line))
-            f.write(line.replace("\r\n", "\n"))
+    with open(file_name, "r+", encoding='utf8', errors='ignore') as f:
+        text = f.read()
+        text = re.sub("\r\n", "\n", text)
+        f.seek(0)
+        f.write(text)
+        f.truncate()
+
 
 def recursive_process(file_path):
     if not os.path.exists(file_path):
@@ -27,6 +28,7 @@ def recursive_process(file_path):
             recursive_process(cur_file)
         else:
             dos2unix(cur_file)
+
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
