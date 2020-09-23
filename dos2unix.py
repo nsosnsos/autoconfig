@@ -7,7 +7,7 @@ import sys
 
 
 def dos2unix(file_name):
-    with open(file_name, "r+", encoding='utf8', errors='ignore') as f:
+    with open(file_name, "r+", encoding='utf8', errors='ignore', newline='') as f:
         text = f.read()
         text = re.sub("\r\n", "\n", text)
         f.seek(0)
