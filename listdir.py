@@ -20,7 +20,7 @@ def traverse_dir(dir_name):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or not os.path.isdir(sys.argv[1]):
-        print("Usage: listdir.py DIR_NAME")
+        print("Usage: listdir DIR_NAME")
         sys.exit(-1)
     r = traverse_dir(sys.argv[1])
     with io.open(os.path.join(os.path.dirname(sys.argv[1]), "result.txt"), 'w', encoding='utf-8') as f:
