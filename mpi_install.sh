@@ -2,7 +2,7 @@
 
 set -e
 
-export WORKSPACE=$(dirname $(readlink -f "$0"))/..
+export WORKSPACE=$(realpath $(dirname $(readlink -f "$0"))/..)
 export OMPI_SRC=hmpi
 export UCX_SRC=hucx
 

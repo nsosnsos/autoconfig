@@ -2,9 +2,10 @@
 *.obj
 *.a
 *.so
+*.lo
 *.bin
 *.elf
-
+*.m4
 *.gz
 *.tar
 *.zip
@@ -12,7 +13,7 @@
 *.tgz
 *.gz2
 *.gzip
-
+*.in
 *.ini
 *.patch
 *.md
@@ -25,9 +26,9 @@
 *.pptx
 *.xls
 *.xlsx
-
 *.pyc
 .*
 README
+Makefile
 __pycache__/
 .idea/
