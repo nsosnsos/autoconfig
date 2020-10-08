@@ -3,6 +3,13 @@
 *.a
 *.so
 *.lo
+*.la
+*.sub
+*.tex
+*.guess
+*.status
+*.spec
+*.pc
 *.bin
 *.elf
 *.m4
