@@ -20,6 +20,7 @@
 *.tgz
 *.gz2
 *.gzip
+*.bz2
 *.in
 *.ini
 *.patch
