@@ -22,7 +22,7 @@ alias ll='ls --color=auto -laF'
 export TZ='Asia/HongKong'
 export HOME=/home/$(whoami)
 export BASE_PATH=${PATH}
-export BASE_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+export BASE_LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
 export GCC_PATH=${BASE_PATH}
 export GCC_LD_LIBRARY_PATH=${BASE_LD_LIBRARY_PATH}
 
