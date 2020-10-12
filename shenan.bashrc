@@ -36,9 +36,9 @@ function load_gcc() {
         echo "GCC(${HOME}/gcc/${GCC_NAME}) is not installed!"
         exit -1
     fi
-    export GCC_INSTALL_PATH=${HOME}/gcc/${GCC_NAME}
-    export GCC_PATH=${GCC_INSTALL_PATH}/bin:${BASE_PATH}
-    export GCC_LD_LIBRARY_PATH=${GCC_INSTALL_PATH}/lib:${GCC_INSTALL_PATH}/lib64:${BASE_LD_LIBRARY_PATH}
+    export GCC_PREFIX=${HOME}/gcc/${GCC_NAME}
+    export GCC_PATH=${GCC_PREFIX}/bin:${BASE_PATH}
+    export GCC_LD_LIBRARY_PATH=${GCC_PREFIX}/lib:${GCC_PREFIX}/lib64:${BASE_LD_LIBRARY_PATH}
     export PATH=${GCC_PATH}
     export LD_LIBRARY_PATH=${GCC_LD_LIBRARY_PATH}
 }
@@ -53,8 +53,8 @@ function load_mpi() {
         echo "MPI(${HOME}/mpi/${MPI_NAME}) is not installed!"
         exit -1
     fi
-    export MPI_INSTALL_PATH=${HOME}/mpi/${MPI_NAME}
-    export LD_LIBRARY_PATH=${MPI_INSTALL_PATH}/lib:${GCC_LD_LIBRARY_PATH}
-    export PATH=${MPI_INSTALL_PATH}/bin:${GCC_PATH}
+    export OPAL_PREFIX=${HOME}/mpi/${MPI_NAME}
+    export LD_LIBRARY_PATH=${OPAL_PREFIX}/lib:${GCC_LD_LIBRARY_PATH}
+    export PATH=${OPAL_PREFIX}/bin:${GCC_PATH}
 }
 
