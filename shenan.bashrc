@@ -36,7 +36,7 @@ function load_gcc() {
     fi
     export GCC_INSTALL_PATH=${HOME}/gcc/${GCC_NAME}
     export GCC_PATH=${GCC_INSTALL_PATH}/bin:${BASE_PATH}
-    export GCC_LD_LIBRARY_PATH=${GCC_INSTALL_PATH}/lib:{GCC_INSTALL_PATH}/lib64:${BASE_LD_LIBRARY_PATH}
+    export GCC_LD_LIBRARY_PATH=${GCC_INSTALL_PATH}/lib:${GCC_INSTALL_PATH}/lib64:${BASE_LD_LIBRARY_PATH}
     export PATH=${GCC_PATH}
     export LD_LIBRARY_PATH=${GCC_LD_LIBRARY_PATH}
 }
