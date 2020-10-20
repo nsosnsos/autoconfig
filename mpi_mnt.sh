@@ -20,3 +20,14 @@ git fetch origin
 git checkout -b huawei origin/master
 git push origin huawei
 cd ..
+
+### FALLBACK EXAMPLE ###
+cd ompi
+# reset 1 commit
+git reset --soft HEAD~1
+# save reverted commit to patch
+git stash show -p --color=never > ../hmpi.patch
+# clean repository
+git checkout . && git clean -f
+# reset upstream 1 commit
+git push --set-upstream origin huawei -f
