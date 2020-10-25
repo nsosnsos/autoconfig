@@ -21,6 +21,10 @@ git checkout -b huawei origin/master
 git push origin huawei
 cd ..
 
+### ADD SUBMODULE ###
+cd ucx
+git submodule add -b huawei --name xucg https://github.com/nsosnsos/xucg.git src/ucg
+
 ### FALLBACK EXAMPLE ###
 cd ompi
 # reset 1 commit
