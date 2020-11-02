@@ -30,11 +30,11 @@ function load_gcc() {
     GCC_NAME=${1}
     if [ "${GCC_NAME}" = "" ]; then
         echo "Usage: load_gcc name"
-        return -1
+        return
     fi
     if [ ! -d ${HOME}/gcc/${GCC_NAME} ]; then
         echo "GCC(${HOME}/gcc/${GCC_NAME}) is not installed!"
-        return -1
+        return
     fi
     export GCC_PREFIX=${HOME}/gcc/${GCC_NAME}
     export GCC_PATH=${GCC_PREFIX}/bin:${BASE_PATH}
@@ -47,11 +47,11 @@ function load_mpi() {
     MPI_NAME=${1}
     if [ "${MPI_NAME}" = "" ]; then
         echo "Usage: load_mpi name"
-        return -1
+        return
     fi
     if [ ! -d ${HOME}/mpi/${MPI_NAME} ]; then
         echo "MPI(${HOME}/mpi/${MPI_NAME}) is not installed!"
-        return -1
+        return
     fi
     export OPAL_PREFIX=${HOME}/mpi/${MPI_NAME}
     export LD_LIBRARY_PATH=${OPAL_PREFIX}/lib:${GCC_LD_LIBRARY_PATH}
