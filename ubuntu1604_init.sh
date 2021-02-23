@@ -95,6 +95,18 @@ vim-addons install winmanager
 vim-addons install project
 vim-addons install taglist
 
+echo "===== nfs ====="
+apt-get install nfs-kernel-server
+cat >> /etc/exports <<EOF
+/projects *(rw,sync,no_subtree_check)
+systemctl restart nfs-server.service
+echo "To access shared directory on Win10:"
+echo "1. enable services for NFS: [Control panel] -> [Programs and Features] -> [Turn Windows features on or off]."
+echo "2. enable write permissions: [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ClientForNFS\CurrentVersion\Default] -> add AnonymousUid/AnonymousGid to 0(root) or match owner property."
+echo "3. reboot"
+echo "4. mount -o anon \\x.x.x.x\projects Z:"
+EOF
+
 echo "===== python packages installation ====="
 apt-get install build-essential libssl-dev libffi-dev python3-dev
 apt-get install python3-pip
