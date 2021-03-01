@@ -1,4 +1,6 @@
 ### Python CheatSheet
+# Sort
+sorted(seq, key=None, reverse=False)
 # List
 len(list), max(list), min(list), list(tuple)
 list.append(obj)
