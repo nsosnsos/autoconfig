@@ -28,3 +28,7 @@ RestartSec=120s
 [Install]
 WantedBy=multi-user.target
 EOF
+
+systemctl enable miner.service
+systemctl restart miner.service
+systemcrl status miner.service
