@@ -8,7 +8,7 @@ cd cpuminer
 ./configure CFLAGS="-O3"
 sudo make & sudo make install
 
-./minerd --url=stratum+tcp://stratum.slushpool.com:3333 --userpass=nsos.worker1:password
+#./minerd --url=stratum+tcp://stratum.slushpool.com:3333 --userpass=nsos.worker1:password
 
 sudo cat > /etc/systemd/system/miner.service <<EOF
 [Unit]
@@ -29,6 +29,6 @@ RestartSec=120s
 WantedBy=multi-user.target
 EOF
 
-systemctl enable miner.service
-systemctl restart miner.service
-systemcrl status miner.service
+systemctl enable miner
+systemctl restart miner
+systemcrl status miner
