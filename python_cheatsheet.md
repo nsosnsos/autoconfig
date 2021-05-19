@@ -1,3 +1,4 @@
+```python
 ### Python CheatSheet
 # Sort
 sorted(seq, key=None, reverse=False)
@@ -83,3 +84,4 @@ heapq.heappushpop(hp, elem)
 heapq.heapreplace(hp, elem)
 heapq.nlargest(n, hp, key=func)
 heapq.nsmallest(n, hp, key=func)
+```
