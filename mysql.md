@@ -18,6 +18,11 @@ mysql> ALTER USER 'user_name'@'localhost' IDENTIFIED BY 'new_user_password';
 ```shell
 mysql> DROP USER 'user_name'@'localhost' IDENTIFIED BY 'user_password';
 ```
+
+#CREATE DATABASE
+```shell
+mysql> CREATE DATABASE IF NOT EXISTS hallelujah DEFAULT CHARSET utf8 COLLATE utf8_bin;
+```
 #PRIVILEGES
 ```shell
 mysql> GRANT ALL PRIVILEGES ON database_name.* TO 'user_name'@'localhost';
