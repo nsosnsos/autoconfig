@@ -97,7 +97,7 @@ if [ ! -d $mount_root/tmp ]; then
 	sudo chmod a+w $mount_root/tmp
 fi
 
-sync 
+sync
 echo "$mount_root is done."
 
 echo "==================== STAGE 5 ===================="

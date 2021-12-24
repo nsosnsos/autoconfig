@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
 import re
@@ -7,7 +7,7 @@ import sys
 
 
 def remove_trailing_spaces(file_name):
-    with open(file_name, "r+", encoding='utf8', errors='ignore', newline='') as file:
+    with open(file_name, mode="r+", encoding='utf8', errors='ignore', newline='') as file:
         text = file.read()
         text = re.sub(r'[ \t]+(\n|\Z)', r'\1', text)
         file.seek(0)
