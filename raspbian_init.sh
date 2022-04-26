@@ -62,6 +62,14 @@ sudo rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
 sudo systemctl enable nginx
 sudo ststemctl start nginx
 
+sudo apt-get install -y shellinabox
+sudo cat > /etc/default/shellinabox <<EOF
+# TCP port that shellinboxd's webserver listens on
+SHELLINABOX_PORT=8888
+EOF
+sudo systemctl enable shellinabox
+sudo ststemctl start shellinabox
+
 sudo apt-get install -y mariadb-server
 sudo mysql << EOF
 USE mysql;
@@ -80,3 +88,4 @@ export no_proxy="localhost, 127.0.0.1, 192.168.*"
 EOF
 chmod u+x ~/proxy.sh
 echo "alias chrome='nohup chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\" > /dev/null 2>&1 &'" >> ~/.bashrc
+
