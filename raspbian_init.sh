@@ -64,8 +64,16 @@ sudo ststemctl start nginx
 
 sudo apt-get install -y shellinabox
 sudo cat > /etc/default/shellinabox <<EOF
+# Should shellinaboxd start automatically
+SHELLINABOX_DAEMON_START=1
 # TCP port that shellinboxd's webserver listens on
-SHELLINABOX_PORT=8888
+SHELLINABOX_PORT=8080
+# Any optional arguments (e.g. extra service definitions). Make sure
+# that that argument is quoted.
+#
+#   Beeps are disabled because of reports of the VLC plugin crashing
+#   Firefox on Linux/x86_64.
+SHELLINABOX_ARGS="--no-beep --disable-ssl "
 EOF
 sudo systemctl enable shellinabox
 sudo ststemctl start shellinabox
