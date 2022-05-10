@@ -76,7 +76,7 @@ SHELLINABOX_PORT=8080
 SHELLINABOX_ARGS="--no-beep --disable-ssl "
 EOF
 sudo systemctl enable shellinabox
-sudo ststemctl start shellinabox
+sudo systemctl start shellinabox
 
 sudo apt-get install -y mariadb-server
 sudo mysql << EOF
