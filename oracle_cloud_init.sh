@@ -32,6 +32,6 @@ PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
 EOF
 
-sudo sed -i s:PasswordAuthentication.*:PasswordAuthentication yes: /etc/ssh/sshd_config
+sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 sudo service ssh restart
 
