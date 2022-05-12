@@ -1,5 +1,5 @@
 [user]
-	name = shenan
+	name = nsosnsos
 	email = nsosnsos@gmail.com
 
 [color]
@@ -27,7 +27,7 @@
 [commit]
 	template = ~/.gitmessage
 
-#git config --global user.name "shenan"
+#git config --global user.name "nsosnsos"
 #git config --global user.email "nsosnsos@gmail.com"
 #git config --global core.editor vim
 #git config --global core.quotepath false
