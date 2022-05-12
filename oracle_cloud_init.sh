@@ -16,17 +16,19 @@ SHELLINABOX_PORT=4200
 #
 #   Beeps are disabled because of reports of the VLC plugin crashing
 #   Firefox on Linux/x86_64.
-SHELLINABOX_ARGS="--no-beep --disable-ssl "
+SHELLINABOX_ARGS="--no-beep --disable-ssl"
 EOF
 
 sudo systemctl enable shellinabox
 sudo systemctl start shellinabox
 
+HOME_DIR=$(eval echo ~${SUDO_USER})
+cat >> ${HOME_DIR}/.bashrc <<EOF
 
-sudo cat >> ~/.bashrc <<EOF
-
-# personalized config
+# personalized prompt sign
 COLOR_RED='\[\e[1;31m\]'
 COLOR_NULL='\[\e[0m\]'
-PS1="$COLOR_RED[\u@\h \t] \w$ $COLOR_NULL"
+PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
+
 EOF
+
