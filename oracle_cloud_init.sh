@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 set -x
-                                                                                                                                                                                                                   
+
+HOME_DIR=$(eval echo ~${SUDO_USER})
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cp ${SCRIPT_DIR}/.gitconfig ${HOME_DIR}/
+cp ${SCRIPT_DIR}/.gitignore ${HOME_DIR}/
+cp ${SCRIPT_DIR}/.gitmessage ${HOME_DIR}/
+cp ${SCRIPT_DIR}/.vimrc ${HOME_DIR}/
+
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install net-tools shellinabox
 sudo ufw disable
@@ -22,7 +29,6 @@ EOF
 sudo systemctl enable shellinabox
 sudo systemctl start shellinabox
 
-HOME_DIR=$(eval echo ~${SUDO_USER})
 cat >> ${HOME_DIR}/.bashrc <<EOF
 
 # personalized prompt sign
@@ -35,4 +41,11 @@ EOF
 sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 sudo sed -i 's/#TCPKeepAlive yes/TCPKeepAlive yes/g' /etc/ssh/sshd_config
 sudo service ssh restart
+
+sudo iptables -P INPUT ACCEPT
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -P OUTPUT ACCEPT
+sudo iptables -F
+sudo apt-get purge netfilter-persistent
+echo "***** REBOOT PLEASE *****"
 
