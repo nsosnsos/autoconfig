@@ -15,7 +15,7 @@ def rename_traverse_dir(dir_name, old_suffix, new_suffix):
         if os.path.isdir(cur_file):
             rename_traverse_dir(cur_file, old_suffix, new_suffix)
         elif old_suffix:
-            if cur_file.endwith(old_suffix):
+            if cur_file.endswith(old_suffix):
                 file_name, file_ext = os.path.splitext(cur_file)
                 os.rename(cur_file, file_name + "." + new_suffix)
         else:
