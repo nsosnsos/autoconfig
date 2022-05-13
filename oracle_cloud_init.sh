@@ -10,7 +10,11 @@ cp ${SCRIPT_DIR}/.gitmessage ${HOME_DIR}/
 cp ${SCRIPT_DIR}/.vimrc ${HOME_DIR}/
 
 sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install net-tools shellinabox
+sudo apt-get install net-tools ntpdate shellinabox
+
+sudo ntpdate -u ntp.ubuntu.com
+sudo timedatectl set-timezone "Asia/Hong_Kong"
+
 sudo ufw disable
 
 sudo cat > /etc/default/shellinabox <<EOF
