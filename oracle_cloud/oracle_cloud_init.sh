@@ -17,6 +17,16 @@ sudo timedatectl set-timezone "Asia/Hong_Kong"
 
 sudo ufw disable
 
+modprobe tcp_bbr
+echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf
+echo "net.core.default_qdisc=fq" | sudo tee --append /etc/sysctl.conf
+echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee --append /etc/sysctl.conf
+sudo sysctl -p
+## verify tcp bbr
+#sysctl net.ipv4.tcp_available_congestion_control
+#sysctl net.ipv4.tcp_congestion_control
+#lsmod | grep bbr
+
 sudo cat > /etc/default/shellinabox <<EOF
 # Should shellinaboxd start automatically
 SHELLINABOX_DAEMON_START=1
