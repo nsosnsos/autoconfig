@@ -4,10 +4,10 @@ set -x
 
 HOME_DIR=$(eval echo ~${SUDO_USER})
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cp ${SCRIPT_DIR}/.gitconfig ${HOME_DIR}/
-cp ${SCRIPT_DIR}/.gitignore ${HOME_DIR}/
-cp ${SCRIPT_DIR}/.gitmessage ${HOME_DIR}/
-cp ${SCRIPT_DIR}/.vimrc ${HOME_DIR}/
+cp ${SCRIPT_DIR}/../.gitconfig ${HOME_DIR}/
+cp ${SCRIPT_DIR}/../.gitignore ${HOME_DIR}/
+cp ${SCRIPT_DIR}/../.gitmessage ${HOME_DIR}/
+cp ${SCRIPT_DIR}/../.vimrc ${HOME_DIR}/
 
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install net-tools ntpdate shellinabox
