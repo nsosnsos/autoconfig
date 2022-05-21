@@ -32,7 +32,7 @@ sudo cp site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert
 sudo cp site.key ${HOST_PATH}/cert/${SITE_NAME}.key
 sudo sed -z "s|ssl_prefer_server_ciphers on;\n\n|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;\n\n|g" /etc/nginx/nginx.conf | sudo tee /etc/nginx/nginx.conf > /dev/null
 sudo sed -i 's|SITE_NAME|'${SITE_NAME}'|g' ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME}
-sudo sed -i 's|SITE_DIR|'${HOST_PATH}'|g' ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME}
+sudo sed -i 's|SITE_PATH|'${HOST_PATH}'|g' ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME}
 sudo sed -i 's|SITE_CERT|'${HOST_PATH}/cert/${SITE_NAME}.cert'|g' ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME}
 sudo sed -i 's|SITE_KEY|'${HOST_PATH}/cert/${SITE_NAME}.key'|g' ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME}
 sudo ln -s ${NGINX_CONFIG_PATH}/sites-available/${SITE_NAME} ${NGINX_CONFIG_PATH}/sites-enabled/${SITE_NAME}

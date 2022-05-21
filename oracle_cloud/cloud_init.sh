@@ -55,7 +55,7 @@ sudo sysctl -p
 
 ### Install and config v2ray
 cd ${SCRIPT_DIR}/../v2ray
-sudo bash v2ray_config.sh
+sudo bash v2ray_auto.sh
 cd ${SCRIPT_DIR}
 
 ### Config shellinabox
