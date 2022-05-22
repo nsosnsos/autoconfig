@@ -7,9 +7,9 @@ SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 ### Check script parameters
-if [ ${#} != 2 ]; then
+if [[ ${#} != 2 && ${#} != 3 ]]; then
     echo "Error parameters !!!"
-    echo "Usage ${SCRIPT_NAME}: SITE_CERT_PATH SITE_CONF_FILE"
+    echo "Usage ${SCRIPT_NAME}: SITE_CERT_PATH SITE_CONF_FILE [SITE_NAME]"
     exit -1
 else
     SITE_CERT_PATH=${1}
@@ -33,10 +33,14 @@ if [[ ! -f ${NGINX_PATH}/nginx.conf ]]; then
 fi
 
 ### Config nginx
-read -p "Enter SITE_NAME: " SITE_NAME
-if [ -z "${SITE_NAME}" ]; then
-    echo "Error: Empty SITE_NAME !!!"
-    exit -1
+if [ ${#} == 3 ]; then
+    SITE_NAME=${3}
+else
+    read -p "Enter SITE_NAME: " SITE_NAME
+    if [ -z "${SITE_NAME}" ]; then
+        echo "Error: Empty SITE_NAME !!!"
+        exit -1
+    fi
 fi
 echo "Configuring nginx with site name: [${SITE_NAME}]"
 HOST_PATH=${HOME_DIR}/${SITE_NAME}

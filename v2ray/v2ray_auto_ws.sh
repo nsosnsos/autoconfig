@@ -4,12 +4,16 @@ set -x
 
 HOME_DIR=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 SITE_NAME=v2ray
-SITE_CERT_PATH=${SCRIPT_PATH}/../oracle_cloud
-SITE_CONF_FILE=${SCRIPT_PATH}/nginx_ws.conf
+if [ ${#} != 2 ]; then
+    echo "Wrong parameters !!"
+    echo "Usage ${SCRIPT_NAME} SITE_CERT_PATH SITE_CONF_PATH"
+    exit -1
+fi
 
-sudo bash ${SITE_CERT_PATH}/nginx_init.sh ${SITE_CERT_PATH} ${SITE_CONF_FILE}
+bash ${SCRIPT_PATH}/../oracle_cloud/nginx_init.sh ${1} ${2} ${SITE_NAME}
 sudo cp ${SCRIPT_PATH}/v2ray_config_ws.json /usr/local/etc/v2ray/config.json
 
 sudo systemctl restart v2ray
