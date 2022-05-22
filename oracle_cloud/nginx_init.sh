@@ -3,18 +3,32 @@ set -e
 set -x
 
 HOME_DIR=$(eval echo ~${SUDO_USER})
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
-### Check for nginx installation
+### Check script parameters
+if [ ${#} != 2 ]; then
+    echo "Error parameters !!!"
+    echo "Usage ${SCRIPT_NAME}: SITE_CERT_PATH SITE_CONF_FILE"
+    exit -1
+else
+    SITE_CERT_PATH=${1}
+    if [[ ! -f ${SITE_CERT_PATH}/site.cert || ! -f ${SITE_CERT_PATH}/site.key ]]; then
+        echo "Get site certificate first !!!"
+        exit -1
+    fi
+    SITE_CONF_FILE=${2}
+    if [ ! -f ${SITE_CONF_FILE} ]; then
+        echo "Check site conf file !!!"
+        exit -1
+    fi
+fi
+
+
+### Check nginx installation
 NGINX_PATH=/etc/nginx
 if [[ ! -f ${NGINX_PATH}/nginx.conf ]]; then
     echo "Install nginx first !!!"
-    exit -1
-fi
-
-### Check for site certificate
-if [[ ! -f ${SCRIPT_DIR}/site.cert || ! -f ${SCRIPT_DIR}/site.key ]]; then
-    echo "Get site certificate first !!!"
     exit -1
 fi
 
@@ -33,11 +47,11 @@ fi
 if [ -f ${NGINX_PATH}/sites-enabled/${SITE_NAME} ]; then
     rm ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 fi
-sudo cp site.conf ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo cp site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert
-sudo cp site.key ${HOST_PATH}/cert/${SITE_NAME}.key
+sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo cp ${SITE_CERT_PATH}/site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert
+sudo cp ${SITE_CERT_PATH}/site.key ${HOST_PATH}/cert/${SITE_NAME}.key
 #sudo sed -z "s|ssl_prefer_server_ciphers on;\n\n|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;\n\n|g" /etc/nginx/nginx.conf | sudo tee /etc/nginx/nginx.conf > /dev/null
-if ! grep -Fxq "ssl_certificate ${NGINX_PATH}.conf; then
+if ! grep -Fq "ssl_certificate" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;|g" ${NGINX_PATH}/nginx.conf
 fi
 sudo sed -i 's|SITE_NAME|'${SITE_NAME}'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}
