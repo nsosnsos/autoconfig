@@ -54,6 +54,9 @@ fi
 sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo cp ${SITE_CERT_PATH}/site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert
 sudo cp ${SITE_CERT_PATH}/site.key ${HOST_PATH}/cert/${SITE_NAME}.key
+if grep -Fq "TLSv1.3" ${NGINX_PATH}/nginx.conf; then
+    sudo sed -i "s|TLSv1.2 TLSv1.3|TLSv1.2|g" ${NGINX_PATH}/nginx.conf
+fi
 #sudo sed -z "s|ssl_prefer_server_ciphers on;\n\n|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;\n\n|g" /etc/nginx/nginx.conf | sudo tee /etc/nginx/nginx.conf > /dev/null
 if ! grep -Fq "ssl_certificate" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;|g" ${NGINX_PATH}/nginx.conf
