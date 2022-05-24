@@ -9,7 +9,10 @@ git clone git@github.com:nsosnsos/autoconfig.git
 
 | ID | URL                                |
 |:--:|:----------------------------------:|
-| 1  | [VM1](https://155.248.215.3:4200/)|
+| 1  | [VM1](https://nsosnsos.tk/sh/)|
 | 2  | [VM2](http://155.248.192.168:4200/)|
 
 ---
+
+
+f902a108-81db-4c8c-bdd7-9c6963b5ec8z
