@@ -17,8 +17,8 @@ if [ ! -f ${1} ]; then
     exit -1
 fi
 
-sudo bash v2ray_install.sh
-sudo bash v2ray_dat_install.sh
+sudo bash ${SCRIPT_PATH}/v2ray_install.sh
+sudo bash ${SCRIPT_PATH}/v2ray_dat_install.sh
 
 sudo cp ${1} /usr/local/etc/v2ray/config.json
 sudo systemctl restart v2ray
