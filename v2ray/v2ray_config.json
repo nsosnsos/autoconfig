@@ -5,7 +5,7 @@
     "error": "/tmp/v2ray_error.log"
   },
   "inbounds": [{
-    "port": 443,
+    "port": 4300,
     "protocol": "vmess",
     "settings": {
       "clients": [

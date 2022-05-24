@@ -5,7 +5,6 @@
     "error": "/tmp/v2ray_error.log"
   },
   "inbounds": [{
-    "listen": "127.0.0.1",
     "port": 4300,
     "protocol": "vmess",
     "settings": {
@@ -13,7 +12,7 @@
         {
           "id": "f902a108-81db-4c8c-bdd7-9c6963b5ec8a",
           "level": 1,
-          "alterId": 64
+          "alterId": 0
         }
       ]
     },
