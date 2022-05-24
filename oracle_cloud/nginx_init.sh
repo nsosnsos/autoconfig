@@ -2,7 +2,7 @@
 set -e
 set -x
 
-HOME_DIR=$(eval echo ~${SUDO_USER})
+HOME_PATH=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
@@ -43,7 +43,7 @@ else
     fi
 fi
 echo "Configuring nginx with site name: [${SITE_NAME}]"
-HOST_PATH=${HOME_DIR}/${SITE_NAME}
+HOST_PATH=${HOME_PATH}/${SITE_NAME}
 mkdir -p ${HOST_PATH}/cert
 if [ -f ${NGINX_PATH}/sites-enabled/default ]; then
     rm ${NGINX_PATH}/sites-enabled/default

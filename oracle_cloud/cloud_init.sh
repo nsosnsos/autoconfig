@@ -2,17 +2,17 @@
 set -e
 set -x
 
-HOME_DIR=$(eval echo ~${SUDO_USER})
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+HOME_PATH=$(eval echo ~${SUDO_USER})
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ### Update home config
-cp ${SCRIPT_DIR}/../.gitconfig ${HOME_DIR}/
-cp ${SCRIPT_DIR}/../.gitignore ${HOME_DIR}/
-cp ${SCRIPT_DIR}/../.gitmessage ${HOME_DIR}/
-cp ${SCRIPT_DIR}/../.vimrc ${HOME_DIR}/
+cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
+cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
+cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
+cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 
 ### Set bash prompt
-cat >> ${HOME_DIR}/.bashrc <<EOF
+cat >> ${HOME_PATH}/.bashrc <<EOF
 
 # personalized prompt sign
 COLOR_RED='\[\e[1;31m\]'
@@ -54,9 +54,9 @@ sudo sysctl -p
 #lsmod | grep bbr
 
 ### Install and config v2ray
-cd ${SCRIPT_DIR}/../v2ray
+cd ${SCRIPT_PATH}/../v2ray
 sudo bash v2ray_auto.sh
-cd ${SCRIPT_DIR}
+cd ${SCRIPT_PATH}
 
 ### Config shellinabox
 sudo cat > /etc/default/shellinabox <<EOF
@@ -76,7 +76,11 @@ sudo systemctl enable shellinabox
 sudo systemctl start shellinabox
 
 ### Config nginx
+echo "If you have freenom and cloudflare, you can use nginx to proxy shellinabox and v2ray by:"
+echo "sudo bash v2ray_auto.sh CONF_FILE"
+echo "sudo bash nginx_init.sh SITE_CERT_PATH SITE_CONF_FILE [SITE_NAME]"
 
+### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
 echo "***** REBOOT PLEASE *****"
 
