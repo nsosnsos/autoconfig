@@ -10,7 +10,7 @@ git clone git@github.com:nsosnsos/autoconfig.git
 | ID | URL                                |
 |:--:|:----------------------------------:|
 | 1  | [VM1](https://nsosnsos.tk/)|
-| 2  | [VM2](http://nsosnsos.cf/)|
+| 2  | [VM2](https://nsosnsos.cf/)|
 
 ---
 
