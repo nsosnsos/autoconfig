@@ -57,6 +57,9 @@ sudo cp ${SITE_CERT_PATH}/site.key ${HOST_PATH}/cert/${SITE_NAME}.key
 if ! grep -Fq "ssl_certificate" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_certificate ${HOST_PATH}/cert/${SITE_NAME}.cert;\n\tssl_certificate_key ${HOST_PATH}/cert/${SITE_NAME}.key;|g" ${NGINX_PATH}/nginx.conf
 fi
+if ! grep -Fq "client_max_body_size" ${NGINX_PATH}/nginx.conf; then
+    sudo sed -i "s|sendfile on;|sendfile on;\n\tclient_max_body_size 1024M;|g" ${NGINX_PATH}/nginx.conf
+fi
 sudo sed -i 's|SITE_NAME|'${SITE_NAME}'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i 's|SITE_PATH|'${HOST_PATH}'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i 's|SITE_CERT|'${HOST_PATH}/cert/${SITE_NAME}.cert'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}

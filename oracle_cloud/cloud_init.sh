@@ -103,6 +103,7 @@ sudo sed -i "s|# c.NotebookApp.ip = 'localhost'|c.NotebookApp.ip = '0.0.0.0'|g" 
 sudo sed -i "s|# c.NotebookApp.port = 8888|c.NotebookApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
 sudo sed -i "s|# c.NotebookApp.base_url = '/'|c.NotebookApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
 sudo sed -i "s|# c.NotebookApp.allow_origin = ''|c.NotebookApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
+sudo sed -i "s|# c.NotebookApp.tornado_settings = {}|c.NotebookApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}
 
 echo "[Unit]
 Description=Jupyter Notebook
