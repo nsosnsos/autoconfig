@@ -46,10 +46,10 @@ echo "Configuring nginx with site name: [${SITE_NAME}]"
 HOST_PATH=${HOME_PATH}/${SITE_NAME}
 sudo mkdir -p ${HOST_PATH}/cert
 if [ -f ${NGINX_PATH}/sites-enabled/default ]; then
-    rm ${NGINX_PATH}/sites-enabled/default
+    sudo rm ${NGINX_PATH}/sites-enabled/default
 fi
 if [ -f ${NGINX_PATH}/sites-enabled/${SITE_NAME} ]; then
-    rm ${NGINX_PATH}/sites-enabled/${SITE_NAME}
+    sudo rm ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 fi
 sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo cp ${SITE_CERT_PATH}/site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert

@@ -20,6 +20,14 @@ else
     V2RAY_CONFIG_FILE=v2ray_config.json
 fi
 
+echo "=== Begin to config ubuntu automatically ..."
+echo "=== Note: You should run it with current user with sudo priviledge."
+echo "===       First, it will update your system and optimize instance."
+echo "===       Second, it will deploy shellinabox, v2ray, jupyter notebook and nginx."
+echo "===       If you provide a domain name, it will config v2ray with websocket."
+echo "===       If no certificate provided, then self-signed certificate will be generated."
+echo "===       Good luck !\n"
+
 ### Update home config
 cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
@@ -117,8 +125,7 @@ sudo systemctl enable notebook
 sudo systemctl start notebook
 
 ### Config shellinabox
-sudo cat > /etc/default/shellinabox <<EOF
-# Should shellinaboxd start automatically
+echo "# Should shellinaboxd start automatically
 SHELLINABOX_DAEMON_START=1
 # TCP port that shellinboxd's webserver listens on
 SHELLINABOX_PORT=4200
@@ -127,8 +134,7 @@ SHELLINABOX_PORT=4200
 #
 #   Beeps are disabled because of reports of the VLC plugin crashing
 #   Firefox on Linux/x86_64.
-SHELLINABOX_ARGS="--no-beep --disable-ssl"
-EOF
+SHELLINABOX_ARGS=\"--no-beep --disable-ssl\"" | sudo tee /etc/default/shellinabox > /dev/null
 
 sudo systemctl daemon-reload
 sudo systemctl enable shellinabox
