@@ -27,7 +27,8 @@ cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 
 ### Set bash prompt
-cat >> ${HOME_PATH}/.bashrc <<EOF
+if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
+    cat >> ${HOME_PATH}/.bashrc <<EOF
 
 # personalized prompt sign
 COLOR_RED='\[\e[1;31m\]'
@@ -35,6 +36,7 @@ COLOR_NULL='\[\e[0m\]'
 PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
 EOF
+fi
 
 ### Update and install software
 sudo apt-get update && sudo apt-get upgrade -y
@@ -59,9 +61,15 @@ sudo apt-get purge netfilter-persistent -y
 
 ### Enable tcp bbr
 modprobe tcp_bbr
-echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf
-echo "net.core.default_qdisc=fq" | sudo tee --append /etc/sysctl.conf
-echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee --append /etc/sysctl.conf
+if ! grep -Fq "tcp_bbr" /etc/modules-load.d/modules.conf; then
+    echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf
+fi
+if ! grep -Fq "default_qdisc" /etc/sysctl.conf; then
+    echo "net.core.default_qdisc=fq" | sudo tee --append /etc/sysctl.conf
+fi
+if ! grep -Fq "tcp_congestion_control" /etc/sysctl.conf; then
+    echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee --append /etc/sysctl.conf
+fi
 sudo sysctl -p
 ## verify tcp bbr
 #sysctl net.ipv4.tcp_available_congestion_control

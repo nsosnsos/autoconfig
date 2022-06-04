@@ -1,6 +1,6 @@
 #!/bin/bash
+#set -x
 set -e
-set -x
 
 HOME_PATH=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
