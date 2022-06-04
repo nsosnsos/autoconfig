@@ -87,6 +87,7 @@ sudo sed -i "s|# c.NotebookApp.ip = 'localhost'|c.NotebookApp.ip = '0.0.0.0'|g" 
 sudo sed -i "s|# c.NotebookApp.port = 8888|c.NotebookApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
 sudo sed -i "s|# c.NotebookApp.base_url = '/'|c.NotebookApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
 sudo sed -i "s|# c.NotebookApp.allow_origin = ''|c.NotebookApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
+
 echo "[Unit]
 Description=Jupyter Notebook
 
@@ -126,7 +127,7 @@ sudo systemctl enable shellinabox
 sudo systemctl start shellinabox
 
 ### Install and config v2ray
-bash ${SCRIPT_PATH}/../v2ray/v2ray_auto.sh ${SCRIPT_PATH}/../v2ray/${V2RAY_CONFIG_FILE}
+bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
 
 ### Config nginx
 if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then

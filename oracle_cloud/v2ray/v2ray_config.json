@@ -5,23 +5,16 @@
     "error": "/tmp/v2ray_error.log"
   },
   "inbounds": [{
-    "listen": "127.0.0.1",
     "port": 4300,
     "protocol": "vmess",
     "settings": {
       "clients": [
         {
-          "id": "f902a108-81db-4c8c-bdd7-9c6963b5ec8a",
+          "id": "f902a108-81db-4c8c-bdd7-9c6963b5ec8z",
           "level": 1,
           "alterId": 0
         }
       ]
-    },
-    "streamSettings": {
-      "network": "ws",
-      "wsSettings": {
-          "path": "/ws"
-      }
     }
   }],
   "outbounds": [
