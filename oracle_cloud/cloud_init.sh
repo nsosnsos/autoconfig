@@ -26,7 +26,7 @@ echo "===       First, it will update your system and optimize instance."
 echo "===       Second, it will deploy shellinabox, v2ray, jupyter notebook and nginx."
 echo "===       If you provide a domain name, it will config v2ray with websocket."
 echo "===       If no certificate provided, then self-signed certificate will be generated."
-echo "===       Good luck !\n"
+echo "===       Good luck !"
 
 ### Update home config
 cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
