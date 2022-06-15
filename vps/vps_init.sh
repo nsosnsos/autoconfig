@@ -11,6 +11,7 @@ if [ ${#} -gt 1 ]; then
     echo "Usage: ${SCRIPT_NAME} [DOMAIN_NAME]"
     echo "       If DOMAIN_NAME is provided, then make sure legtimate certificate(site.cert/site.key) is provided in [${HOME_PATH}/cert/]."
     echo "       If DOMAIN_NAME is not provided, then v2ray would not be set to websocket."
+    echo "       It had been verified on Ubuntu 20.04 LTS."
     exit -1
 elif [ ${#} -eq 1 ]; then
     DOMAIN_NAME=${1}
@@ -95,7 +96,7 @@ sudo chmod 777 ${NOTEBOOK_WORK_PATH}
 virtualenv ${NOTEBOOK_PATH}
 source ${NOTEBOOK_PATH}/bin/activate
 pip3 install jupyter
-jupyter notebook --generate-config
+echo "y" | jupyter notebook --generate-config
 echo "[Set jupyter notebook password]"
 jupyter notebook password
 deactivate
@@ -150,7 +151,7 @@ if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.
     mkdir -p ${CERT_PATH}
     openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
 fi
-bash ${SCRIPT_PATH}/nginx_init.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx.conf ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx.conf ${DOMAIN_NAME}
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
