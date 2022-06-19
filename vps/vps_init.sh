@@ -85,16 +85,18 @@ sudo sysctl -p
 #sysctl net.ipv4.tcp_congestion_control
 #lsmod | grep bbr
 
+### Python virtual environment
+PYTHON_ENV_PATH=${HOME_PATH}/python_env
+mkdir -p ${PYTHON_ENV_PATH}
+virtualenv ${PYTHON_ENV_PATH}
+
 ### Config jupyter notebook
-NOTEBOOK_PATH=${HOME_PATH}/notebook
 NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
 NOTEBOOK_CONFIG_FILE=${HOME_PATH}/.jupyter/jupyter_notebook_config.py
 
-mkdir -p ${NOTEBOOK_PATH}
 mkdir -p ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
-virtualenv ${NOTEBOOK_PATH}
-source ${NOTEBOOK_PATH}/bin/activate
+source ${PYTHON_ENV_PATH}/bin/activate
 pip3 install jupyter
 echo "y" | jupyter notebook --generate-config
 echo "[Set jupyter notebook password]"
@@ -112,7 +114,7 @@ Description=Jupyter Notebook
 [Service]
 Type=simple
 PIDFile=/run/notebook.pid
-ExecStart=${NOTEBOOK_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
+ExecStart=${PYTHON_ENV_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=${NOTEBOOK_WORK_PATH}
