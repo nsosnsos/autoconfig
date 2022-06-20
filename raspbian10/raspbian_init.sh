@@ -47,11 +47,13 @@ sudo apt-get install -y python3-dev libxml2-dev libxslt1-dev zlib1g-dev libhdf5-
 sudo pip3 install wrapt --ignore-installed
 sudo pip3 install pandas numpy scipy tensorflow matplotlib
 
-ssh-keygen -t rsa -d 4096 -C "nsosnsos@gmail.com"
+read -p "Input user name for github: " PARA_USER
+read -p "Input user email for github: " PARA_EMAIL
+ssh-keygen -t rsa -d 4096 -C "${PARA_EMAIL}"
 cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
 
-git config --global user.name "nsosnsos"
-git config --global user.email "nsosnsos@gmail.com"
+git config --global user.name "${PARA_USER}"
+git config --global user.email "${PARA_EMAIL}"
 git config --global credential.helper store
 git config --global commit.template ~/.gitmessage
 git config --global core.excludesFile ~/.gitignore
