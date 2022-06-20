@@ -28,3 +28,4 @@ if __name__ == "__main__":
         for i in range(len(r)):
             f.write(r[i][len(sys.argv[1]):])
             f.write("\n")
+

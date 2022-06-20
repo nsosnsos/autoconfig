@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #USAGE: diffstat.sh [A] [B]
 
@@ -53,3 +53,4 @@ Total deleted lines:         122
 Total modified lines:        585
 Total changed lines:       10402
 '
+

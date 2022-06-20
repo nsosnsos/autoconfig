@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sudo apt-get install automake autoconf libcurl4-openssl-dev
 cd ~/Workspace
@@ -32,3 +32,4 @@ EOF
 systemctl enable miner
 systemctl restart miner
 systemcrl status miner
+

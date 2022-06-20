@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 sudo chmod 666 /etc/apt/sources.list
 sudo echo deb https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi > /etc/apt/sources.list
 sudo chmod 644 /etc/apt/sources.list

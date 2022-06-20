@@ -47,3 +47,4 @@ sudo chmod 644 ${service_file}
 sudo systemctl daemon-reload
 sudo systemctl enable shadowsocks
 sudo systemctl start shadowsocks
+

@@ -400,3 +400,4 @@ echo "stop-spark.sh" >> /root/stopall.sh
 echo "stop-yarn.sh" >> /root/stopall.sh
 echo "stop-dfs.sh" >> /root/stopall.sh
 echo "mr-jobhistory-daemon.sh stop historyserver" >> /root/stopall.sh
+

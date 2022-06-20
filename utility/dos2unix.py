@@ -38,3 +38,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         exclude_list.extend(sys.argv[2].split(","))
     recursive_process(sys.argv[1], exclude_list)
+

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #set -x
 set -e
 
@@ -153,7 +153,7 @@ if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.
     mkdir -p ${CERT_PATH}
     openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
 fi
-bash ${SCRIPT_PATH}/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx.conf ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
