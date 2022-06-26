@@ -66,5 +66,5 @@ sudo sed -i 's|SITE_CERT|'${HOST_PATH}/cert/${SITE_NAME}.cert'|g' ${NGINX_PATH}/
 sudo sed -i 's|SITE_KEY|'${HOST_PATH}/cert/${SITE_NAME}.key'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo ln -s ${NGINX_PATH}/sites-available/${SITE_NAME} ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 sudo chown -R www-data:www-data ${HOST_PATH}
-sudo service nginx restart
+sudo systemctl restart nginx
 

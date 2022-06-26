@@ -90,11 +90,20 @@ PYTHON_ENV_PATH=${HOME_PATH}/python_env
 mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
+### Config nginx
+if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
+    echo "Generating self signed certificate ..."
+    mkdir -p ${CERT_PATH}
+    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+fi
+bash ${SCRIPT_PATH}/nginx/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
+
 ### Config jupyter notebook
 NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
 NOTEBOOK_CONFIG_FILE=${HOME_PATH}/.jupyter/jupyter_notebook_config.py
 
-mkdir -p ${NOTEBOOK_WORK_PATH}
+sudo mkdir -p ${NOTEBOOK_WORK_PATH}
+sudo chown ubuntu:ubuntu ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
 source ${PYTHON_ENV_PATH}/bin/activate
 pip3 install jupyter
@@ -126,7 +135,7 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /d
 
 sudo systemctl daemon-reload
 sudo systemctl enable notebook
-sudo systemctl start notebook
+sudo systemctl restart notebook
 
 ### Config shellinabox
 echo "# Should shellinaboxd start automatically
@@ -142,18 +151,10 @@ SHELLINABOX_ARGS=\"--no-beep --disable-ssl\"" | sudo tee /etc/default/shellinabo
 
 sudo systemctl daemon-reload
 sudo systemctl enable shellinabox
-sudo systemctl start shellinabox
+sudo systemctl restart shellinabox
 
 ### Install and config v2ray
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
-
-### Config nginx
-if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
-    echo "Generating self signed certificate ..."
-    mkdir -p ${CERT_PATH}
-    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
-fi
-bash ${SCRIPT_PATH}/nginx/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
