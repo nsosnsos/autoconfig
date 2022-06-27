@@ -28,8 +28,7 @@ fi
 ### Check nginx installation
 NGINX_PATH=/etc/nginx
 if [[ ! -f ${NGINX_PATH}/nginx.conf ]]; then
-    echo "Install nginx first !!!"
-    exit -1
+    sudo apt install -y nginx
 fi
 
 ### Config nginx

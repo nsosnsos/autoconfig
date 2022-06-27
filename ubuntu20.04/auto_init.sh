@@ -49,7 +49,7 @@ fi
 
 ### Update and install software
 sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install net-tools ntpdate openssl python3-virtualenv shellinabox nginx -y
+sudo apt-get install -y net-tools ntpdate openssl python3-virtualenv shellinabox
 
 ### Set timezone and synchronize with ntp server
 sudo ntpdate -u ntp.ubuntu.com
@@ -90,15 +90,15 @@ PYTHON_ENV_PATH=${HOME_PATH}/python_env
 mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
-### Config nginx
+### Install and config nginx
 if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
     echo "Generating self signed certificate ..."
     mkdir -p ${CERT_PATH}
     openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
 fi
-bash ${SCRIPT_PATH}/nginx/nginx_config.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
 
-### Config jupyter notebook
+### Install and config jupyter notebook
 NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
 NOTEBOOK_CONFIG_FILE=${HOME_PATH}/.jupyter/jupyter_notebook_config.py
 
@@ -155,6 +155,12 @@ sudo systemctl restart shellinabox
 
 ### Install and config v2ray
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
+
+### Install and config mariadb
+read -p "Enter MariaDB root password: " ROOT_PWD
+read -p "Enter MariaDB new user's username: " MARIADB_USR
+read -p "Enter MariaDB new user's password: " MARIADB_PWD
+bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${ROOT_PWD} ${MARIADB_USR} ${MARIADB_PWD}
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
