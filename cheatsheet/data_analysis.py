@@ -2,9 +2,30 @@
 # -*- coding:utf-8 -*-
 
 
+import io
+import re
+import os
+import bs4
+import sys
+import time
+import json
+import tarfile
+import rarfile
 import inspect
+import platform
+import datetime
+import sshtunnel
+import sqlalchemy
+import collections
+import numpy as np
 import pandas as pd
+from sqlalchemy import exc
 import matplotlib.pyplot as plt
+
+if sys.version_info >= (3, 6):
+    import zipfile
+else:
+    import zipfile36 as zipfile
 
 
 # current call stack
@@ -59,8 +80,8 @@ def df_from_matrix(list_of_list, cols):
     return df
 
 def df_clean(df):
-    df_ret = df.dropna(axis=0, how=u'all')
-    df_ret = df_ret.dropna(axis=1, how=u'all')
+    df_ret = df.dropna(axis=0, how='all')
+    df_ret = df_ret.dropna(axis=1, how='all')
     df_ret.drop_duplicates(inplace=True)
     return df_ret.reset_index(drop=True)
 
@@ -81,8 +102,8 @@ def df_filter(df, col, val_list, filter_out=False):
         df_ret = df.loc[df[col].isnull()] if filter_out else df.loc[df[col].notnull()]
     return df_ret.reset_index(drop=True)
 
-def df_merge(df1, df2, on=None, left_on=None, right_on=None, how=u'inner', sort=u'False',
-             copy=False, suffixes=(u'_x', u'_y')):
+def df_merge(df1, df2, on=None, left_on=None, right_on=None, how='inner', sort='False',
+             copy=False, suffixes=('_x', '_y')):
     return pd.merge(df1, df2, on=on, left_on=left_on, right_on=right_on, how=how,
                     sort=sort, copy=copy, suffixes=suffixes).reset_index(drop=True)
 
@@ -100,23 +121,23 @@ def df_sort(df, by, ascending=True, inplace=False):
 def df_replace(to_replace=None, value=None, inplace=False, regex=False):
     return pd.DataFrame.replace(to_replace=to_replace, value=value, inplace=inplace, regex=regex)
 
-def df_type_convert(df, target_cols, target_type=u'str'):
-    if target_type == u'datetime':
-        df[target_cols] = df[target_cols].apply(pd.to_datetime, errors=u'coerce')
-    elif target_type == u'number':
-        df[target_cols] = df[target_cols].apply(pd.to_numeric, errors=u'coerce')
+def df_type_convert(df, target_cols, target_type='str'):
+    if target_type == 'datetime':
+        df[target_cols] = df[target_cols].apply(pd.to_datetime, errors='coerce')
+    elif target_type == 'number':
+        df[target_cols] = df[target_cols].apply(pd.to_numeric, errors='coerce')
     else:
         for col in target_cols:
-            df[col] = df[col].astype(dtype=target_type, errors=u'ignore')
+            df[col] = df[col].astype(dtype=target_type, errors='ignore')
     return df
 
 def df_to_set(df, col):
     return set(df[col])
 
-def df_to_dict(df, col, orient=u'index'):
+def df_to_dict(df, col, orient='index'):
     return df.set_index(col).to_dict(orient=orient)
 
-def df_from_dict(dict_of_dict, orient=u'index'):
+def df_from_dict(dict_of_dict, orient='index'):
     return pd.DataFrame.from_dict(dict_of_dict, orient=orient).reset_index(drop=False)
 
 # other useful operations
