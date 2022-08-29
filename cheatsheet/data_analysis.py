@@ -547,12 +547,18 @@ def recursive_path_process(dir_name, ext_list, operation, *args, exclude_flag=Fa
 
 # other useful operations
 # dataframe.groupby('COL1')['COL2'].transform('max|min|sum|mean|median|std|var|count')
+# dataframe.groupby('COL1').agg('max|min|sum|mean|median|std|var|count')
 
 
 # plot bar chart
 """
-df = {'time': ['2000-01-01 00:00:00', '2000-01-02 00:00:00', '2000-01-03 00:00:00', '2000-01-04 00:00:00', '2000-01-05 00:00:00'],
+d = {'time': ['2000-01-01 00:00:00', '2000-01-02 00:00:00', '2000-01-03 00:00:00', '2000-01-04 00:00:00', '2000-01-05 00:00:00'],
       'price': [110, 120, 130, 140, 125]}
+df = pd.DataFrame(d)
+df['time'] = pd.to_datetime(df['time'])
+df['time'] = df['time'].dt.date
+df = df.sort_values(by=['time'], ascending=True)
+
 plt.bar(df['time'], df[r'price'])
 plt.title('Price Histogram')
 plt.xlabel('Time')
@@ -563,10 +569,15 @@ plt.show()
 
 # plot line chart
 """
-df = {'time': ['2000-01-01 00:00:00', '2000-01-02 00:00:00', '2000-01-03 00:00:00', '2000-01-04 00:00:00', '2000-01-05 00:00:00', '2000-01-06 00:00:00'],
+d = {'time': ['2000-01-01 00:00:00', '2000-01-02 00:00:00', '2000-01-03 00:00:00', '2000-01-04 00:00:00', '2000-01-05 00:00:00', '2000-01-06 00:00:00'],
       'price': [100, 110, 120, 130, 140, 125],
       'cost': [50, 55, 60, 65, 70, 60],
       'profit': [50, 55, 60, 60, 80, 65]}
+df = pd.DataFrame(d)
+df['time'] = pd.to_datetime(df['time'])
+df['time'] = df['time'].dt.date
+df = df.sort_values(by=['time'], ascending=True)
+
 plt.figure(dpi=120, figsize=(16, 8))
 plt.plot(df['time'], df['price'])
 plt.plot(df['time'], df['cost'])
@@ -576,5 +587,30 @@ plt.xlabel('Time')
 plt.ylabel('value')
 plt.grid()
 plt.legend(('Price','Cost', 'Profit'), loc='upper right', frameon=True)
+plt.show()
+"""
+
+
+# plot two line charts in one plot.
+"""
+df = {'time': ['2000-01-01 00:00:00', '2000-01-02 00:00:00', '2000-01-03 00:00:00', '2000-01-04 00:00:00', '2000-01-05 00:00:00', '2000-01-06 00:00:00'],
+      'price': [100, 110, 120, 130, 140, 125],
+      'cost': [50, 55, 60, 65, 70, 60],
+      'profit': [50, 55, 60, 60, 80, 65]}
+df = pd.DataFrame(d)
+df['time'] = pd.to_datetime(df['time'])
+df['time'] = df['time'].dt.date
+df = df.sort_values(by=['time'], ascending=True)
+
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+legend1, = ax1.plot(df['time'], df['cost'], color='red')
+legend2, = ax2.plot(df['time'], df['profit'], color='green')
+ax1.set_xlabel('Date')
+ax1.set_ylabel('Cost', color='red')
+ax2.set_ylabel('Profit', color='green')
+plt.title('Cost VS Profit')
+plt.grid()
+plt.legend((legend1, legend2), ('cost', 'profit'), loc='upper right', frameon=True)
 plt.show()
 """
