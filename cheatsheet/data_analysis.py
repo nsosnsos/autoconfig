@@ -19,6 +19,7 @@ import sqlalchemy
 import collections
 import numpy as np
 import pandas as pd
+import networkx as nx
 from sqlalchemy import exc
 import matplotlib.pyplot as plt
 
@@ -543,6 +544,20 @@ def recursive_path_process(dir_name, ext_list, operation, *args, exclude_flag=Fa
         elif exclude_flag:
             r.append(operation(cur_file, *args))
     return r
+
+def draw_graph(self, edges, title=None, save_dot=False, save_img=False, show_img=False):
+    g = nx.Graph()
+    g.add_edges_from(edges)
+    pos = nx.spring_layout(g)
+    nx.draw(g, pos=pos, with_labels=True, font_weight='bold')
+    if title:
+        plt.title(title)
+    if save_dot:
+        nx.drawing.nx_agraph.write_dot(g, 'graph.dot')
+    if save_img:
+        plt.savefig('test.png', format='PNG', dpi=800)
+    if show_img:
+        plt.show()
 
 
 # other useful operations
