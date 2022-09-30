@@ -545,7 +545,7 @@ def recursive_path_process(dir_name, ext_list, operation, *args, exclude_flag=Fa
             r.append(operation(cur_file, *args))
     return r
 
-def draw_graph(self, edges, title=None, save_dot=False, save_img=False, show_img=False):
+def draw_graph(edges, title=None, save_dot=False, save_img=False, show_img=False):
     g = nx.Graph()
     g.add_edges_from(edges)
     pos = nx.spring_layout(g)
