@@ -34,6 +34,10 @@ cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
+read -p "Enter github user name: " GITHUB_USER
+read -p "Enter github mail address " GITHUB_EMAIL
+sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
+sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
 
 ### Set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
