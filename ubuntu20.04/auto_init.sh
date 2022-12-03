@@ -50,6 +50,14 @@ PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
 EOF
 fi
+if ! grep -Fq "bash_history" ${HOME_PATH}/.bash_logout; then
+    cat >> ${HOME_PATH}/.bash_logout <<EOF
+
+# remove bash history after logout
+rm -rf ~/.bash_history
+
+EOF
+fi
 
 ### Update and install software
 sudo apt-get update && sudo apt-get upgrade -y
