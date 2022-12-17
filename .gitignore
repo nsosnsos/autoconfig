@@ -40,3 +40,4 @@ README
 Makefile
 __pycache__/
 .idea/
+storage/
