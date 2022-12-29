@@ -48,6 +48,9 @@ COLOR_RED='\[\e[1;31m\]'
 COLOR_NULL='\[\e[0m\]'
 PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
+# remove bash history after logout
+rm -rf ~/.bash_history
+
 EOF
 fi
 if ! grep -Fq "bash_history" ${HOME_PATH}/.bash_logout; then
