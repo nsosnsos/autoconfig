@@ -39,10 +39,8 @@ cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 read -p "Enter github mail address: " GITHUB_EMAIL
-IFS='@'
-read -ra str_array <<< "${GITHUB_EMAIL}"
+readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
-echo "${GITHUB_USER}"
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
 
