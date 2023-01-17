@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+#set -x
 set -e
 
 HOME_PATH=$(eval echo ~${SUDO_USER})
@@ -29,18 +29,21 @@ fi
 sudo apt install mariadb-server -y
 
 ### Config mariadb-server
-# Make sure that NOBODY can access the server without a password
-sudo mysql -e "UPDATE mysql.user SET Password = PASSWORD('${1}') WHERE User = 'root'"
-# Delete the anonymous users
-sudo mysql -u root -p'${1}' -e "DELETE FROM mysql.user WHERE User=''"
-# Because our hostname varies we'll use some Bash magic here
-sudo mysql -u root -p'${1}' -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
-# Delete the demo database
-sudo mysql -u root -p'${1}' -e "DROP DATABASE IF EXISTS test"
-sudo mysql -u root -p'${1}' -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
+# initialize mariadb
+echo "
+y
+y
+${1}
+${1}
+y
+y
+y
+y" | sudo /usr/bin/mysql_secure_installation
 
 if [ ${#} == 3 ]; then
     # Add specific user.
+    sudo mysql -u root -p'${1}' -e "DROP USER '${2}'@'localhost'"
+    sudo mysql -u root -p'${1}' -e "FLUSH PRIVILEGES"
     sudo mysql -u root -p'${1}' -e "CREATE USER '${2}'@'localhost' IDENTIFIED BY '${3}'"
     sudo mysql -u root -p'${1}' -e "GRANT ALL PRIVILEGES on *.* TO '${2}'@'localhost'"
 fi
