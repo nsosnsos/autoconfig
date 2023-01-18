@@ -33,6 +33,9 @@ echo "===       Good luck !"
 read -p "Enter hostname: " HOSTNAME
 echo "${HOSTNAME}" | sudo tee /etc/hostname
 
+### enable password login
+sudo sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+
 ### Update home config
 cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
