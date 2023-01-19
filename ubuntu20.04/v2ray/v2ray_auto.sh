@@ -5,7 +5,9 @@ set -e
 HOME_PATH=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
-V2RAY_DIR=${HOME_PATH}/workspace/fhs-install-v2ray
+WORK_DIR=workspace
+V2RAY_REPO=fhs-install-v2ray
+V2RAY_DIR=${HOME_PATH}/${WORK_DIR}/${V2RAY_REPO}
 
 if [ ${#} != 1 ]; then
     echo "Wrong parameters !!!"
@@ -19,10 +21,11 @@ if [ ! -f ${1} ]; then
 fi
 
 if [ ! -d ${V2RAY_DIR} ]; then
-    echo "Please download fhs-install-v2ray repository first !!!"
-    echo "STEP1: cd ~/workspace"
-    echo "STEP2: git clone git@github.com:nsosnsos/fhs-install-v2ray.git"
-    exit -1
+    echo "Downloading ${V2RAY_REPO} repository, you should have forked ${V2RAY_REPO}!"
+    mkdir -p ${HOME_PATH}/${WORK_DIR}
+    cd ${HOME_PATH}/${WORK_DIR}
+    git clone git@github.com:${GITHUB_USER}/${V2RAY_REPO}.git
+    cd -
 fi
 
 sudo bash ${V2RAY_DIR}/install-release.sh

@@ -25,6 +25,8 @@ echo "=== Begin to config vps automatically ..."
 echo "=== Note: You should run it with current user with sudo priviledge."
 echo "===       First, it will update your system and optimize instance."
 echo "===       Second, it will deploy shellinabox, v2ray, jupyter notebook and nginx."
+echo "===       Third, it will download fhs-install-v2ray repository in workspace if not exists."
+echo "===       If you have not forked fhs-install-v2ray in your github repos, v2ray installation would fail."
 echo "===       If you provide a domain name, it will config v2ray with websocket."
 echo "===       If no certificate provided, then self-signed certificate will be generated."
 echo "===       Good luck !"
@@ -44,6 +46,7 @@ cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 read -p "Enter github mail address: " GITHUB_EMAIL
 readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
+export GITHUB_USER
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
 
