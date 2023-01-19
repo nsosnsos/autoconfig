@@ -11,7 +11,7 @@ if [ ${#} -gt 1 ]; then
     echo "Usage: ${SCRIPT_NAME} [DOMAIN_NAME]"
     echo "       If DOMAIN_NAME is provided, then make sure legtimate certificate(site.cert/site.key) is provided in [${HOME_PATH}/cert/]."
     echo "       If DOMAIN_NAME is not provided, then v2ray would not be set to websocket."
-    echo "       It had been verified on Ubuntu 20.04 LTS."
+    echo "       It had been verified on Ubuntu 20.04/22.04 LTS."
     exit -1
 elif [ ${#} -eq 1 ]; then
     DOMAIN_NAME=${1}
@@ -21,7 +21,7 @@ else
     V2RAY_CONFIG_FILE=v2ray_config.json
 fi
 
-echo "=== Begin to config ubuntu automatically ..."
+echo "=== Begin to config vps automatically ..."
 echo "=== Note: You should run it with current user with sudo priviledge."
 echo "===       First, it will update your system and optimize instance."
 echo "===       Second, it will deploy shellinabox, v2ray, jupyter notebook and nginx."
@@ -126,7 +126,7 @@ NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
 NOTEBOOK_CONFIG_FILE=${HOME_PATH}/.jupyter/jupyter_notebook_config.py
 
 sudo mkdir -p ${NOTEBOOK_WORK_PATH}
-sudo chown ubuntu:ubuntu ${NOTEBOOK_WORK_PATH}
+sudo chown ${SUDO_USER}:${SUDO_USER} ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
 source ${PYTHON_ENV_PATH}/bin/activate
 pip3 install jupyter
@@ -147,8 +147,8 @@ Description=Jupyter Notebook
 Type=simple
 PIDFile=/run/notebook.pid
 ExecStart=${PYTHON_ENV_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
-User=ubuntu
-Group=ubuntu
+User=${SUDO_USER}
+Group=${SUDO_USER}
 WorkingDirectory=${NOTEBOOK_WORK_PATH}
 Restart=always
 RestartSec=10
@@ -186,6 +186,6 @@ read -p "Enter MariaDB new user's password: " MARIADB_PWD
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${ROOT_PWD} ${MARIADB_USR} ${MARIADB_PWD}
 
 ### SET PASSWORD
-echo "***** CHANGE PASSWORD FOR root & ubuntu *****"
+echo "***** CHANGE PASSWORD FOR root & ${SUDO_USER} *****"
 echo "***** REBOOT PLEASE *****"
 
