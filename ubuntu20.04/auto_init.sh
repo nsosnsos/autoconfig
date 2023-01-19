@@ -31,7 +31,7 @@ echo "===       Good luck !"
 
 ### set hostname
 read -p "Enter hostname: " HOSTNAME
-echo "${HOSTNAME}" | sudo tee /etc/hostname
+echo "${HOSTNAME}" | sudo tee /etc/hostname > /dev/null
 
 ### enable password login
 sudo sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/g" /etc/ssh/sshd_config
@@ -71,7 +71,7 @@ EOF
 fi
 
 ### Update and install software
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install -y net-tools ntpdate openssl python3-virtualenv shellinabox
 
 ### Set timezone and synchronize with ntp server
@@ -94,13 +94,13 @@ sudo apt-get purge netfilter-persistent -y
 ### Enable tcp bbr
 modprobe tcp_bbr
 if ! grep -Fq "tcp_bbr" /etc/modules-load.d/modules.conf; then
-    echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf
+    echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf > /dev/null
 fi
 if ! grep -Fq "default_qdisc" /etc/sysctl.conf; then
-    echo "net.core.default_qdisc=fq" | sudo tee --append /etc/sysctl.conf
+    echo "net.core.default_qdisc=fq" | sudo tee --append /etc/sysctl.conf > /dev/null
 fi
 if ! grep -Fq "tcp_congestion_control" /etc/sysctl.conf; then
-    echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee --append /etc/sysctl.conf
+    echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee --append /etc/sysctl.conf > /dev/null
 fi
 sudo sysctl -p
 ## verify tcp bbr
@@ -110,6 +110,7 @@ sudo sysctl -p
 
 ### Python virtual environment
 PYTHON_ENV_PATH=${HOME_PATH}/python_env
+sudo rm -rf ${PYTHON_ENV_PATH}
 mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
@@ -154,7 +155,7 @@ Restart=always
 RestartSec=10
 
 [Install]
-WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /dev/null
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /dev/null > /dev/null
 
 sudo systemctl daemon-reload
 sudo systemctl enable notebook
