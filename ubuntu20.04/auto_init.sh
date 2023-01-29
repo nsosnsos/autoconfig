@@ -107,9 +107,10 @@ if ! grep -Fq "tcp_congestion_control" /etc/sysctl.conf; then
 fi
 sudo sysctl -p
 ## verify tcp bbr
-#sysctl net.ipv4.tcp_available_congestion_control
+echo "Verify TCP BBR"
+sysctl net.ipv4.tcp_available_congestion_control
 #sysctl net.ipv4.tcp_congestion_control
-#lsmod | grep bbr
+lsmod | grep bbr
 
 ### Python virtual environment
 PYTHON_ENV_PATH=${HOME_PATH}/python_env
