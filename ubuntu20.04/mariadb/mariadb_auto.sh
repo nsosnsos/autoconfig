@@ -13,7 +13,8 @@ if [[ ${#} -ne 1 && ${#} -ne 0 ]]; then
     exit -1
 elif type mariadb > /dev/null 2>&1 ; then
     if [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
-        sudo apt remove -y mariadb-server
+        sudo apt purge mysql-* -y
+        sudo apt purge mariadb-* -y
         sudo apt autoremove -y
     else
         echo "MariaDB is already installed, and it would not be configured again."
@@ -43,13 +44,11 @@ y
 y
 y" | sudo /usr/bin/mariadb-secure-installation
 
-if [ ${#} == 3 ]; then
-    # Add specific user.
-    sudo mariadb -u root -p'${ROOT_PWD}' -e "DROP USER '${MARIADB_USR}'@'localhost'"
-    sudo mariadb -u root -p'${ROOT_PWD}' -e "FLUSH PRIVILEGES"
-    sudo mariadb -u root -p'${ROOT_PWD}' -e "CREATE USER '${MARIADB_USR}'@'localhost' IDENTIFIED BY '${MARIADB_PWD}'"
-    sudo mariadb -u root -p'${ROOT_PWD}' -e "GRANT ALL PRIVILEGES on *.* TO '${MARIADB_USR}'@'localhost'"
-fi
+# Add specific user.
+sudo mariadb -u root -p'${ROOT_PWD}' -e "DROP USER IF EXISTS '${MARIADB_USR}'@'localhost'"
+sudo mariadb -u root -p'${ROOT_PWD}' -e "FLUSH PRIVILEGES"
+sudo mariadb -u root -p'${ROOT_PWD}' -e "CREATE USER '${MARIADB_USR}'@'localhost' IDENTIFIED BY '${MARIADB_PWD}'"
+sudo mariadb -u root -p'${ROOT_PWD}' -e "GRANT ALL PRIVILEGES on *.* TO '${MARIADB_USR}'@'localhost'"
 
 # Make our changes take effect
 sudo mariadb -u root -p'${ROOT_PWD}' -e "FLUSH PRIVILEGES"
