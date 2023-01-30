@@ -7,11 +7,11 @@ SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 ### Check script parameters
-if [[ ${#} -ne 1 && ${#} -ne 3 ]]; then
+if [[ ${#} -ne 1 && ${#} -ne 0 ]]; then
     echo "Error parameters !!!"
-    echo "Usage ${SCRIPT_NAME}: ROOT_PWD MARIADB_USR MARIADB_PWD"
+    echo "Usage ${SCRIPT_NAME} [uninstall]"
     exit -1
-elif type mysql > /dev/null 2>&1 ; then
+elif type mariadb > /dev/null 2>&1 ; then
     if [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
         sudo apt remove -y mariadb-server
         sudo apt autoremove -y
@@ -24,6 +24,9 @@ elif [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
     exit -1
 fi
 
+read -p "Enter MariaDB root password: " ROOT_PWD
+read -p "Enter MariaDB new user's username: " MARIADB_USR
+read -p "Enter MariaDB new user's password: " MARIADB_PWD
 
 ### Install mariadb-server
 sudo apt install mariadb-server -y
@@ -33,23 +36,23 @@ sudo apt install mariadb-server -y
 echo "
 y
 y
-${1}
-${1}
+${ROOT_PWD}
+${ROOT_PWD}
 y
 y
 y
-y" | sudo /usr/bin/mysql_secure_installation
+y" | sudo /usr/bin/mariadb-secure-installation
 
 if [ ${#} == 3 ]; then
     # Add specific user.
-    sudo mysql -u root -p'${1}' -e "DROP USER '${2}'@'localhost'"
-    sudo mysql -u root -p'${1}' -e "FLUSH PRIVILEGES"
-    sudo mysql -u root -p'${1}' -e "CREATE USER '${2}'@'localhost' IDENTIFIED BY '${3}'"
-    sudo mysql -u root -p'${1}' -e "GRANT ALL PRIVILEGES on *.* TO '${2}'@'localhost'"
+    sudo mariadb -u root -p'${ROOT_PWD}' -e "DROP USER '${MARIADB_USR}'@'localhost'"
+    sudo mariadb -u root -p'${ROOT_PWD}' -e "FLUSH PRIVILEGES"
+    sudo mariadb -u root -p'${ROOT_PWD}' -e "CREATE USER '${MARIADB_USR}'@'localhost' IDENTIFIED BY '${MARIADB_PWD}'"
+    sudo mariadb -u root -p'${ROOT_PWD}' -e "GRANT ALL PRIVILEGES on *.* TO '${MARIADB_USR}'@'localhost'"
 fi
 
 # Make our changes take effect
-sudo mysql -u root -p'${1}' -e "FLUSH PRIVILEGES"
+sudo mariadb -u root -p'${ROOT_PWD}' -e "FLUSH PRIVILEGES"
 
 sudo systemctl restart mariadb
 

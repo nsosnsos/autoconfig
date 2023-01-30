@@ -185,10 +185,7 @@ sudo systemctl restart shellinabox
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
 
 ### Install and config mariadb
-read -p "Enter MariaDB root password: " ROOT_PWD
-read -p "Enter MariaDB new user's username: " MARIADB_USR
-read -p "Enter MariaDB new user's password: " MARIADB_PWD
-bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${ROOT_PWD} ${MARIADB_USR} ${MARIADB_PWD}
+bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ${SUDO_USER} *****"
