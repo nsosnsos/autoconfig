@@ -3,27 +3,33 @@
 set -e
 
 HOME_PATH=$(eval echo ~${SUDO_USER})
+CERT_PATH=${HOME_PATH}/cert
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 ### Check script parameters
-if [[ ${#} != 2 && ${#} != 3 ]]; then
-    echo "Error parameters !!!"
-    echo "Usage ${SCRIPT_NAME}: SITE_CERT_PATH SITE_CONF_FILE [SITE_NAME]"
+if [[ ${#} != 1 ]]; then
+    echo "Usage: ${SCRIPT_NAME}: SITE_NAME"
     exit -1
+elif type nginx > /dev/null 2>&1 ; then
+    echo "nginx is already installed !!!"
+    exit 0
 else
-    SITE_CERT_PATH=${1}
-    if [[ ! -f ${SITE_CERT_PATH}/site.cert || ! -f ${SITE_CERT_PATH}/site.key ]]; then
-        echo "Get site certificate first !!!"
-        exit -1
-    fi
-    SITE_CONF_FILE=${2}
+    SITE_NAME=${1}
+    SITE_CERT_PATH=${CERT_PATH}
+    SITE_CONF_FILE=${SCRIPT_PATH}/nginx.conf
     if [ ! -f ${SITE_CONF_FILE} ]; then
-        echo "Check site conf file !!!"
+        echo "There is not nginx site conf file !!!"
         exit -1
     fi
 fi
 
+### Self-signed cetificate generation
+if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
+    echo "Generating self signed certificate ..."
+    mkdir -p ${CERT_PATH}
+    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+fi
 
 ### Check nginx installation
 NGINX_PATH=/etc/nginx
@@ -32,15 +38,6 @@ if [[ ! -f ${NGINX_PATH}/nginx.conf ]]; then
 fi
 
 ### Config nginx
-if [ ${#} == 3 ]; then
-    SITE_NAME=${3}
-else
-    read -p "Enter SITE_NAME: " SITE_NAME
-    if [ -z "${SITE_NAME}" ]; then
-        echo "Error: Empty SITE_NAME !!!"
-        exit -1
-    fi
-fi
 echo "Configuring nginx with site name: [${SITE_NAME}]"
 HOST_PATH=${HOME_PATH}/${SITE_NAME}
 sudo mkdir -p ${HOST_PATH}/cert

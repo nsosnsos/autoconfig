@@ -8,8 +8,7 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 ### Check script parameters
 if [[ ${#} -ne 1 && ${#} -ne 0 ]]; then
-    echo "Error parameters !!!"
-    echo "Usage ${SCRIPT_NAME} [uninstall]"
+    echo "Usage: ${SCRIPT_NAME} [uninstall]"
     exit -1
 elif type mariadb > /dev/null 2>&1 ; then
     if [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
@@ -17,7 +16,7 @@ elif type mariadb > /dev/null 2>&1 ; then
         sudo apt purge mariadb-* -y
         sudo apt autoremove -y
     else
-        echo "MariaDB is already installed, and it would not be configured again."
+        echo "MariaDB is already installed !!!"
     fi
     exit 0
 elif [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then

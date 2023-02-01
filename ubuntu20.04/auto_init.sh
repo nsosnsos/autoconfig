@@ -6,7 +6,6 @@ HOME_PATH=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
-CERT_PATH=${HOME_PATH}/cert
 if [ ${#} -gt 1 ]; then
     echo "Usage: ${SCRIPT_NAME} [DOMAIN_NAME]"
     echo "       If DOMAIN_NAME is provided, then make sure legtimate certificate(site.cert/site.key) is provided in [${HOME_PATH}/cert/]."
@@ -46,7 +45,6 @@ cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 read -p "Enter github mail address: " GITHUB_EMAIL
 readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
-export GITHUB_USER
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
 
@@ -119,12 +117,7 @@ mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
 ### Install and config nginx
-if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
-    echo "Generating self signed certificate ..."
-    mkdir -p ${CERT_PATH}
-    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/site.cert -keyout ${CERT_PATH}/site.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
-fi
-bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${CERT_PATH} ${SCRIPT_PATH}/nginx/nginx.conf ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${DOMAIN_NAME}
 
 ### Install and config jupyter notebook
 NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
@@ -182,7 +175,7 @@ sudo systemctl enable shellinabox
 sudo systemctl restart shellinabox
 
 ### Install and config v2ray
-bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
+bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
 
 ### Install and config mariadb
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh
