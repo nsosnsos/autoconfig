@@ -73,7 +73,7 @@ fi
 
 ### Update and install software
 sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install -y net-tools ntpdate openssl python3-virtualenv shellinabox
+sudo apt-get install -y net-tools ntpdate openssl python3-virtualenv
 
 ### Set timezone and synchronize with ntp server
 sudo ntpdate -u ntp.ubuntu.com
@@ -117,65 +117,16 @@ mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
 ### Install and config nginx
-bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${GITHUB_USER} ${DOMAIN_NAME}
 
-### Install and config jupyter notebook
-NOTEBOOK_WORK_PATH=${HOME_PATH}/${DOMAIN_NAME}/notebook
-NOTEBOOK_CONFIG_FILE=${HOME_PATH}/.jupyter/jupyter_notebook_config.py
-
-sudo mkdir -p ${NOTEBOOK_WORK_PATH}
-sudo chown ${SUDO_USER}:${SUDO_USER} ${NOTEBOOK_WORK_PATH}
-sudo chmod 777 ${NOTEBOOK_WORK_PATH}
-source ${PYTHON_ENV_PATH}/bin/activate
-pip3 install jupyter
-echo "y" | jupyter notebook --generate-config
-echo "[Set jupyter notebook password]"
-jupyter notebook password
-deactivate
-sudo sed -i "s|# c.NotebookApp.ip = 'localhost'|c.NotebookApp.ip = '0.0.0.0'|g" ${NOTEBOOK_CONFIG_FILE}
-sudo sed -i "s|# c.NotebookApp.port = 8888|c.NotebookApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
-sudo sed -i "s|# c.NotebookApp.base_url = '/'|c.NotebookApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
-sudo sed -i "s|# c.NotebookApp.allow_origin = ''|c.NotebookApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
-sudo sed -i "s|# c.NotebookApp.tornado_settings = {}|c.NotebookApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}
-
-echo "[Unit]
-Description=Jupyter Notebook
-
-[Service]
-Type=simple
-PIDFile=/run/notebook.pid
-ExecStart=${PYTHON_ENV_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
-User=${SUDO_USER}
-Group=${SUDO_USER}
-WorkingDirectory=${NOTEBOOK_WORK_PATH}
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /dev/null > /dev/null
-
-sudo systemctl daemon-reload
-sudo systemctl enable notebook
-sudo systemctl restart notebook
-
-### Config shellinabox
-echo "# Should shellinaboxd start automatically
-SHELLINABOX_DAEMON_START=1
-# TCP port that shellinboxd's webserver listens on
-SHELLINABOX_PORT=4200
-# Any optional arguments (e.g. extra service definitions). Make sure
-# that that argument is quoted.
-#
-#   Beeps are disabled because of reports of the VLC plugin crashing
-#   Firefox on Linux/x86_64.
-SHELLINABOX_ARGS=\"--no-beep --disable-ssl\"" | sudo tee /etc/default/shellinabox > /dev/null
-
-sudo systemctl daemon-reload
-sudo systemctl enable shellinabox
-sudo systemctl restart shellinabox
+### Install and config shellinabox
+bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh install
 
 ### Install and config v2ray
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
+
+### Install and config jupyter notebook
+bash ${SCRIPT_PATH}/notebook/nb_auto.sh install ${DOMAIN_NAME}
 
 ### Install and config mariadb
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh
