@@ -117,7 +117,7 @@ mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 
 ### Install and config nginx
-bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${GITHUB_USER} ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_auto.sh install ${GITHUB_USER} ${DOMAIN_NAME}
 
 ### Install and config shellinabox
 bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh install

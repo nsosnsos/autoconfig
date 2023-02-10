@@ -5,34 +5,37 @@ set -e
 HOME_PATH=$(eval echo ~${SUDO_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+CERT_PATH=${HOME_PATH}/cert
 
 ### Check script parameters
-if [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
+if [[ ${#} -eq 3 && ${1} == "install" ]]; then
+    if type nginx > /dev/null 2>&1 ; then
+        echo "nginx is already installed !!!"
+        exit 0
+    else
+        GITHUB_USER=${2}
+        SITE_NAME=${3}
+        NGINX_PATH=/etc/nginx
+        WORK_DIR=workspace
+        ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
+        SITE_CONF_FILE=${SCRIPT_PATH}/nginx.conf
+        if [ ! -f ${SITE_CONF_FILE} ]; then
+            echo "There is not nginx site conf file !!!"
+            exit -1
+        fi
+    fi
+elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type nginx > /dev/null 2>&1 ; then
         sudo apt purge nginx-* -y
+        sudo rm -rf ${CERT_PATH}
         exit 0
     else
         echo "ngnix is not installed yes !!!"
         exit 0
     fi
-elif [[ ${#} -ne 2 ]]; then
-    echo "Usage: ${SCRIPT_NAME}: GITHUB_USER SITE_NAME"
-    exit -1
-elif type nginx > /dev/null 2>&1 ; then
-    echo "nginx is already installed !!!"
-    exit 0
 else
-    GITHUB_USER=${1}
-    SITE_NAME=${2}
-    CERT_PATH=${HOME_PATH}/cert
-    NGINX_PATH=/etc/nginx
-    WORK_DIR=workspace
-    ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
-    SITE_CONF_FILE=${SCRIPT_PATH}/nginx.conf
-    if [ ! -f ${SITE_CONF_FILE} ]; then
-        echo "There is not nginx site conf file !!!"
-        exit -1
-    fi
+    echo "Usage: ${SCRIPT_NAME}: install/uninstall [GITHUB_USER] [SITE_NAME]"
+    exit -1
 fi
 
 ### install nginx
