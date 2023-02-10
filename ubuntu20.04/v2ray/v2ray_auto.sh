@@ -9,21 +9,33 @@ WORK_DIR=workspace
 V2RAY_REPO=fhs-install-v2ray
 V2RAY_DIR=${HOME_PATH}/${WORK_DIR}/${V2RAY_REPO}
 
-if [ ${#} != 2 ]; then
-    echo "Usage: ${SCRIPT_NAME} GITHUB_USER CONF_FILE"
+if [[ ${#} -eq 3 && ${1} == "install" ]]; then
+    if type v2ray > /dev/null 2>&1 ; then
+        echo "V2ray is already installed !!!"
+        exit 0
+    else
+        if [ ! -f ${CONF_FILE} ]; then
+            echo "Non-existing v2ray config file !!!"
+            exit -1
+        fi
+        GITHUB_USER=${2}
+        CONF_FILE=${3}
+    fi
+elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
+    if type v2ray > /dev/null 2>&1 ; then
+        echo "Uninstalling v2ray ..."
+        sudo bash ${V2RAY_DIR}/install-release.sh --remove
+        sudo systemctl disable v2ray
+        sudo rm -rf /usr/local/etc/v2ray /var/log/v2ray
+        exit 0
+    else
+        echo "V2ray is not installed yet !!!"
+        exit 0
+    fi
+else
+    echo "Usage: ${SCRIPT_NAME} install/uninstall [GITHUB_USER] [CONF_FILE]"
     echo "       You should have repo at git@github.com:[GITHUB_USER]/${V2RAY_REPO}.git first !!!"
     exit -1
-else
-    GITHUB_USER=${1}
-    CONF_FILE=${2}
-fi
-
-if [ ! -f ${CONF_FILE} ]; then
-    echo "Non-existing v2ray config file !!!"
-    exit -1
-elif type v2ray > /dev/null 2>&1 ; then
-    echo "V2ray is already installed !!!"
-    exit 0
 fi
 
 if [ ! -d ${V2RAY_DIR} ]; then

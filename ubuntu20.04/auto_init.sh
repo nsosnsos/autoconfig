@@ -123,7 +123,7 @@ bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${GITHUB_USER} ${DOMAIN_NAME}
 bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh install
 
 ### Install and config v2ray
-bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
+bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh install ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
 
 ### Install and config jupyter notebook
 bash ${SCRIPT_PATH}/notebook/nb_auto.sh install ${DOMAIN_NAME}
