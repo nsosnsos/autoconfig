@@ -8,19 +8,16 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 if [[ ${#} -eq 1 && ${1} == "install" ]]; then
     if type shellinaboxd > /dev/null 2>&1 ; then
-        echo "Shellinabox is already installed !!!"
+        echo "shellinabox is already installed !!!"
         exit 0
-    else
-        echo "Installing shellinabox ..."
-        sudo apt install shellinabox -y
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type shellinaboxd > /dev/null 2>&1 ; then
-        echo "Uninstalling shellinabox ..."
+        echo "uninstalling shellinabox ..."
         sudo apt purge shellinabox -y
         exit 0
     else
-        echo "Shellinabox is not installed yet !!!"
+        echo "shellinabox is not installed yet !!!"
         exit 0
     fi
 else
@@ -28,8 +25,12 @@ else
     exit -1
 fi
 
+### Install shellinabox
+echo "installing shellinabox ..."
+sudo apt install shellinabox -y
+
 ### Config shellinabox
-echo "Configure shellinabox ..."
+echo "configuring shellinabox ..."
 echo "# Should shellinaboxd start automatically
 SHELLINABOX_DAEMON_START=1
 # TCP port that shellinboxd's webserver listens on

@@ -10,13 +10,13 @@ WORK_DIR=workspace
 ACME_REPO=acme.sh
 
 ### Check script parameters
-if [[ ${#} -ne 2 ]]; then
-    echo "Usage:     ${SCRIPT_NAME}: GITHUB_USER SITE_NAME"
+if [[ ${#} -ne 1 ]]; then
+    echo "Usage:     ${SCRIPT_NAME} SITE_NAME"
     echo "Attention: You should have configured SITE_NAME correctly for nginx, and WWW-ROOT works well."
     exit -1
 else
-    GITHUB_USER=${1}
-    SITE_NAME=${2}
+    SITE_NAME=${1}
+    GITHUB_USER=$(git config user.name)
     ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
 fi
 

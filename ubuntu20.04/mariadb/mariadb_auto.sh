@@ -7,20 +7,24 @@ SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 ### Check script parameters
-if [[ ${#} -ne 1 && ${#} -ne 0 ]]; then
-    echo "Usage: ${SCRIPT_NAME} [uninstall]"
-    exit -1
-elif type mariadb > /dev/null 2>&1 ; then
-    if [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
+if [[ ${#} == 1 && ${1} == "install" ]]; then
+    if type mariadb > /dev/null 2>&1 ; then
+        echo "mariadb is already installed !!!"
+        exit 0
+    fi
+elif [[ ${#} == 1 && ${1} == "uninstall" ]]; then
+    if type mariadb > /dev/null 2>&1 ; then
+        echo "uninstalling mariadb ... !!!"
         sudo apt purge mysql-* -y
         sudo apt purge mariadb-* -y
         sudo apt autoremove -y
+        exit 0
     else
-        echo "MariaDB is already installed !!!"
+        echo "mariadb is not installed yet !!!"
+        exit 0
     fi
-    exit 0
-elif [[ ${#} -eq 1 && "${1}" == "uninstall" ]]; then
-    echo "MariaDB has not been installed yet."
+else
+    echo "Usage: ${SCRIPT_NAME} install/uninstall"
     exit -1
 fi
 
@@ -29,10 +33,11 @@ read -p "Enter MariaDB new user's username: " MARIADB_USR
 read -p "Enter MariaDB new user's password: " MARIADB_PWD
 
 ### Install mariadb-server
+echo "installing mariadb ..."
 sudo apt install mariadb-server -y
 
 ### Config mariadb-server
-# initialize mariadb
+echo "configuring mariadb ..."
 echo "
 y
 y

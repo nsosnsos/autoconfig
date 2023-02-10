@@ -8,13 +8,12 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 CERT_PATH=${HOME_PATH}/cert
 
 ### Check script parameters
-if [[ ${#} -eq 3 && ${1} == "install" ]]; then
+if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if type nginx > /dev/null 2>&1 ; then
         echo "nginx is already installed !!!"
         exit 0
     else
-        GITHUB_USER=${2}
-        SITE_NAME=${3}
+        SITE_NAME=${2}
         NGINX_PATH=/etc/nginx
         WORK_DIR=workspace
         ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
@@ -26,6 +25,7 @@ if [[ ${#} -eq 3 && ${1} == "install" ]]; then
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type nginx > /dev/null 2>&1 ; then
+        echo "uninstalling nginx ..."
         sudo apt purge nginx-* -y
         sudo rm -rf ${CERT_PATH}
         exit 0
@@ -34,11 +34,11 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         exit 0
     fi
 else
-    echo "Usage: ${SCRIPT_NAME}: install/uninstall [GITHUB_USER] [SITE_NAME]"
+    echo "Usage: ${SCRIPT_NAME}: install/uninstall [SITE_NAME]"
     exit -1
 fi
 
-### install nginx
+### Install nginx
 echo "installing nignx ..."
 sudo apt install nginx -y
 
@@ -51,10 +51,10 @@ fi
 
 ### Automated certificate generation and update
 ### Decoupled with automated cert generation, because you should check www-root works fine by yourself.
-#bash cert_gen.sh ${GITHUB_USER} ${SITE_NAME}
+#bash cert_gen.sh ${SITE_NAME}
 
 ### Config nginx
-echo "Configuring nginx with site name: [${SITE_NAME}]"
+echo "configuring nginx with site name: [${SITE_NAME}]"
 HOST_PATH=${HOME_PATH}/${SITE_NAME}
 if [ -f ${NGINX_PATH}/sites-enabled/default ]; then
     sudo rm ${NGINX_PATH}/sites-enabled/default

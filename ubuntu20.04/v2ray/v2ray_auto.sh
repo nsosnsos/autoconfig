@@ -11,11 +11,11 @@ V2RAY_DIR=${HOME_PATH}/${WORK_DIR}/${V2RAY_REPO}
 
 if [[ ${#} -eq 3 && ${1} == "install" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
-        echo "V2ray is already installed !!!"
+        echo "v2ray is already installed !!!"
         exit 0
     else
         if [ ! -f ${CONF_FILE} ]; then
-            echo "Non-existing v2ray config file !!!"
+            echo "There is no v2ray config file [${CONF_FILE}] !!!"
             exit -1
         fi
         GITHUB_USER=${2}
@@ -23,13 +23,13 @@ if [[ ${#} -eq 3 && ${1} == "install" ]]; then
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
-        echo "Uninstalling v2ray ..."
+        echo "uninstalling v2ray ..."
         sudo bash ${V2RAY_DIR}/install-release.sh --remove
         sudo systemctl disable v2ray
         sudo rm -rf /usr/local/etc/v2ray /var/log/v2ray
         exit 0
     else
-        echo "V2ray is not installed yet !!!"
+        echo "v2ray is not installed yet !!!"
         exit 0
     fi
 else
@@ -38,6 +38,8 @@ else
     exit -1
 fi
 
+### Install v2ray
+echo "installing v2ray ..."
 if [ ! -d ${V2RAY_DIR} ]; then
     echo "Downloading ${V2RAY_REPO} repository, you should have forked ${V2RAY_REPO}!"
     mkdir -p ${HOME_PATH}/${WORK_DIR}
@@ -49,6 +51,8 @@ fi
 sudo bash ${V2RAY_DIR}/install-release.sh
 sudo bash ${V2RAY_DIR}/install-dat-release.sh
 
+### Config v2ray
+echo "configuring v2ray ..."
 sudo cp ${CONF_FILE} /usr/local/etc/v2ray/config.json
 echo "Default v2ray id: 00000000-0000-0000-0000-000000000000"
 echo "Please modify to v2ray config id by [uuidgen]"

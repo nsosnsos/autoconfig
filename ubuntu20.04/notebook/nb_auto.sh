@@ -12,20 +12,20 @@ NOTEBOOK_WORK_PATH=${HOME_PATH}/${SITE_NAME}/notebook
 
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
-        echo "Notebook is already installed !!!"
+        echo "notebook is already installed !!!"
         exit 0
     else
         SITE_NAME=${2}
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
-        echo "Uninstalling notebook ..."
+        echo "uninstalling notebook ..."
         source ${NOTEBOOK_ENV_PATH}/bin/activate
         pip3 uninstall jupyter -y
         sudo rm -rf ${NOTEBOOK_CONFIG_PATH}
         exit 0
     else
-        echo "Notebook is not installed yet !!!"
+        echo "notebook is not installed yet !!!"
         exit 0
     fi
 else
@@ -34,14 +34,14 @@ else
 fi
 
 ### Install notebook
-echo "Installing notebook ..."
+echo "installing notebook ..."
 mkdir -p ${NOTEBOOK_ENV_PATH}
 virtualenv ${NOTEBOOK_ENV_PATH}
 source ${NOTEBOOK_ENV_PATH}/bin/activate
 pip3 install jupyter
 
 ### Config notebook
-echo "Configure notebook ..."
+echo "configuring notebook ..."
 sudo mkdir -p ${NOTEBOOK_WORK_PATH}
 sudo chown ${SUDO_USER}:${SUDO_USER} ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
