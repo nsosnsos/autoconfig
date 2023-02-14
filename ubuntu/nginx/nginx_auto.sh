@@ -71,10 +71,10 @@ fi
 if ! grep -Fq "client_max_body_size" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|sendfile on;|sendfile on;\n\tclient_max_body_size 1024M;|g" ${NGINX_PATH}/nginx.conf
 fi
-sudo sed -i "s|SITE_NAME|'${SITE_NAME}'|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i "s|SITE_PATH|'${HOST_PATH}'|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i "s|SITE_CERT|'${HOST_PATH}/cert/${SITE_NAME}.cert'|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i 's|SITE_KEY|'${HOST_PATH}/cert/${SITE_NAME}.key'|g' ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_NAME|${SITE_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_PATH|${HOST_PATH}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_CERT|${HOST_PATH}/cert/${SITE_NAME}.cert|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_KEY|${HOST_PATH}/cert/${SITE_NAME}.key|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo ln -s ${NGINX_PATH}/sites-available/${SITE_NAME} ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 sudo chown -R www-data:www-data ${HOST_PATH}
 sudo systemctl restart nginx

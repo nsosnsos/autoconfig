@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+#set -x
 set -e
 
 HOME_PATH=$(eval echo ~${SUDO_USER})
@@ -21,21 +21,20 @@ else
 fi
 
 ### Automated certificate generation and update
-if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/site.key || ! -f ${CERT_PATH}/site.cert ]]; then
-    if [ ! -d ${ACME_DIR} ]; then
-        echo "Downloading ${ACME_REPO} repository, you should have forked ${ACME_REPO}!"
-        mkdir -p ${HOME_PATH}/${WORK_DIR}
-        cd ${HOME_PATH}/${WORK_DIR}
-        git clone git@github.com:${GITHUB_USER}/${ACME_REPO}.git
-        cd -
-    fi
-    cd ${ACME_DIR}
-    ${ACME_DIR}/${ACME_REPO} --install -m test@test.com
-    ${ACME_DIR}/${ACME_REPO} --issue -d ${SITE_NAME} --nginx
-    ${ACME_DIR}/${ACME_REPO} --install-cert -d ${SITE_NAME} --key-file ${CERT_PATH}/${SITE_NAME}.key --fullchain-file ${CERT_PATH}/${SITE_NAME}.cert --reloadcmd "service nginx force-reload"
-    #sudo systemctl restart nginx
+if [ ! -d ${ACME_DIR} ]; then
+    echo "Downloading ${ACME_REPO} repository, you should have forked ${ACME_REPO}!"
+    mkdir -p ${HOME_PATH}/${WORK_DIR}
+    cd ${HOME_PATH}/${WORK_DIR}
+    git clone git@github.com:${GITHUB_USER}/${ACME_REPO}.git
     cd -
 fi
+
+cd ${ACME_DIR}
+sudo ${ACME_DIR}/${ACME_REPO} --install -m ${SITE_NAME}@${SITE_NAME}
+${ACME_DIR}/${ACME_REPO} --issue -d ${SITE_NAME} --nginx
+${ACME_DIR}/${ACME_REPO} --install-cert -d ${SITE_NAME} --key-file ${CERT_PATH}/${SITE_NAME}.key --fullchain-file ${CERT_PATH}/${SITE_NAME}.cert --reloadcmd "service nginx force-reload"
+cd -
+
 ### Self-signed cetificate generation
 #if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
 #    echo "Generating self signed certificate ..."
