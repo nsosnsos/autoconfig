@@ -7,7 +7,7 @@ SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 if [[ -f "${HOME_PATH}/.vimrc" ]]; then
-    echo "system in already initialized !!!"
+    echo "system is already initialized !!!"
     exit 0
 fi
 

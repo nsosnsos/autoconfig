@@ -30,7 +30,7 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         sudo rm -rf ${CERT_PATH}
         exit 0
     else
-        echo "ngnix is not installed yes !!!"
+        echo "ngnix is not installed yet !!!"
         exit 0
     fi
 else
@@ -62,6 +62,7 @@ fi
 if [ -f ${NGINX_PATH}/sites-enabled/${SITE_NAME} ]; then
     sudo rm ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 fi
+mkdir -p ${HOST_PATH}/cert
 sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo cp ${CERT_PATH}/site.cert ${HOST_PATH}/cert/${SITE_NAME}.cert
 sudo cp ${CERT_PATH}/site.key ${HOST_PATH}/cert/${SITE_NAME}.key

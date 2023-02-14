@@ -25,7 +25,6 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
         echo "uninstalling v2ray ..."
         sudo bash ${V2RAY_DIR}/install-release.sh --remove
-        sudo systemctl disable v2ray
         sudo rm -rf /usr/local/etc/v2ray /var/log/v2ray
         exit 0
     else
