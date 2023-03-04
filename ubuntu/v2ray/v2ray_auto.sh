@@ -2,7 +2,8 @@
 #set -x
 set -e
 
-HOME_PATH=$(eval echo ~${SUDO_USER})
+CUR_USER=$(whoami)
+HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 WORK_DIR=workspace

@@ -2,13 +2,14 @@
 #set -x
 set -e
 
-HOME_PATH=$(eval echo ~${SUDO_USER})
+CUR_USER=$(whoami)
+echo "${CUR_USER}"
+HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 NOTEBOOK_CONFIG_PATH=${HOME_PATH}/.jupyter
 NOTEBOOK_CONFIG_FILE=${NOTEBOOK_CONFIG_PATH}/jupyter_notebook_config.py
 NOTEBOOK_ENV_PATH=${NOTEBOOK_CONFIG_PATH}/python_env
-NOTEBOOK_WORK_PATH=${HOME_PATH}/${SITE_NAME}/notebook
 
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
@@ -16,6 +17,7 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
         exit 0
     else
         SITE_NAME=${2}
+        NOTEBOOK_WORK_PATH=${HOME_PATH}/${SITE_NAME}/notebook
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
@@ -43,7 +45,7 @@ pip3 install jupyter
 ### Config notebook
 echo "configuring notebook ..."
 sudo mkdir -p ${NOTEBOOK_WORK_PATH}
-sudo chown ${SUDO_USER}:${SUDO_USER} ${NOTEBOOK_WORK_PATH}
+sudo chown ${CUR_USER}:${CUR_USER} ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
 
 echo "y" | jupyter notebook --generate-config
@@ -62,8 +64,8 @@ Description=Jupyter Notebook
 Type=simple
 PIDFile=/run/notebook.pid
 ExecStart=${NOTEBOOK_ENV_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
-User=${SUDO_USER}
-Group=${SUDO_USER}
+User=${CUR_USER}
+Group=${CUR_USER}
 WorkingDirectory=${NOTEBOOK_WORK_PATH}
 Restart=always
 RestartSec=10

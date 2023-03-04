@@ -2,7 +2,8 @@
 #set -x
 set -e
 
-HOME_PATH=$(eval echo ~${SUDO_USER})
+CUR_USER=$(whoami)
+HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
@@ -48,6 +49,6 @@ bash ${SCRIPT_PATH}/notebook/nb_auto.sh install ${DOMAIN_NAME}
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh install
 
 ### SET PASSWORD
-echo "***** CHANGE PASSWORD FOR root & ${SUDO_USER} *****"
+echo "***** CHANGE PASSWORD FOR root & ${CUR_USER} *****"
 echo "***** REBOOT PLEASE *****"
 
