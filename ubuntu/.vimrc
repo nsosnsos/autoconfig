@@ -18,6 +18,7 @@ set shiftwidth=4
 set history=50
 set mouse=a
 set expandtab
+set noswapfile
  
 "--- search config ---
 set ignorecase smartcase
