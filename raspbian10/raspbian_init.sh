@@ -60,43 +60,22 @@ git config --global core.excludesFile ~/.gitignore
 git config --global core.editor vim
 git config --global merge.tool vimdiff
 
-sudo apt-get install -y nginx
-sudo rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
-sudo systemctl enable nginx
-sudo ststemctl start nginx
+# Install v2ray and v2raya
+curl -Ls https://mirrors.v2raya.org/go.sh | sudo bash
+sudo systemctl disable v2ray --now
+wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/trusted.gpg.d/v2raya.asc
+echo "deb https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
+sudo apt update
+sudo apt install v2raya
+sudo systemctl enable v2raya.service
+sudo systemctl start v2raya.service
 
-sudo apt-get install -y shellinabox
-sudo cat > /etc/default/shellinabox <<EOF
-# Should shellinaboxd start automatically
-SHELLINABOX_DAEMON_START=1
-# TCP port that shellinboxd's webserver listens on
-SHELLINABOX_PORT=8080
-# Any optional arguments (e.g. extra service definitions). Make sure
-# that that argument is quoted.
-#
-#   Beeps are disabled because of reports of the VLC plugin crashing
-#   Firefox on Linux/x86_64.
-SHELLINABOX_ARGS="--no-beep --disable-ssl "
-EOF
-sudo systemctl enable shellinabox
-sudo systemctl start shellinabox
-
-sudo apt-get install -y mariadb-server
-sudo mysql << EOF
-USE mysql;
-UPDATE user SET password=password('root') WHERE user='root';
-UPDATE user SET plugin='mysql_native_password' WHERE user='root';
-CREATE DATABASE IF NOT EXISTS hallelujah CHARSET utf8 COLLATE utf8_bin;
-FLUSH PRIVILEGES;
-EXIT;
-EOF
-
-sudo apt-get install -y shadowsocks-qt5
+# Set system proxy
 sudo cat > ~/proxy.sh <<EOF
-export http_proxy="socks5://127.0.0.1:1080"
-export https_proxy="socks5://127.0.0.1:1080"
+export http_proxy="socks5://127.0.0.1:20170"
+export https_proxy="socks5://127.0.0.1:20170"
 export no_proxy="localhost, 127.0.0.1, 192.168.*"
 EOF
 chmod u+x ~/proxy.sh
-echo "alias chrome='nohup chromium-browser --proxy-server=\"socks5://127.0.0.1:1080\" > /dev/null 2>&1 &'" >> ~/.bashrc
+echo "alias chrome='nohup chromium-browser --proxy-server=\"socks5://127.0.0.1:20170\" > /dev/null 2>&1 &'" >> ~/.bashrc
 
