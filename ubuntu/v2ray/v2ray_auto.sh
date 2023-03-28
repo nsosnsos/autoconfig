@@ -58,5 +58,6 @@ echo "Default v2ray id: 00000000-0000-0000-0000-000000000000"
 echo "Please modify to v2ray config id by [uuidgen]"
 read -p "Enter v2ray id: " V2RAY_ID
 sudo sed -i "s|00000000-0000-0000-0000-000000000000|${V2RAY_ID}|g" /usr/local/etc/v2ray/config.json
+sudo systemctl enable v2ray
 sudo systemctl restart v2ray
 
