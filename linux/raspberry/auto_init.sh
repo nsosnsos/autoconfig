@@ -83,7 +83,8 @@ COLOR_RED='\[\e[1;31m\]'
 COLOR_NULL='\[\e[0m\]'
 PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
-# add chrome alias with proxy
+# add alias
+alias ll='ls -la'
 alias chrome='nohup chromium-browser --proxy-server=\"socks5://127.0.0.1:20170\" > /dev/null 2>&1 &'
 
 # remove bash history after logout
