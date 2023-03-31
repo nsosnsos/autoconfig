@@ -36,7 +36,7 @@ else
 fi
 
 # clone source
-sudo apt install git bc bison flex libssl-dev make -y
+sudo apt install git bc bison flex libssl-dev make libncurses5-dev -y
 if [[ ! -d "${LINUX_PATH}" ]]; then
 	echo "downloading linux source ..."
 	git clone --depth=1 https://github.com/raspberrypi/linux ${LINUX_PATH}
