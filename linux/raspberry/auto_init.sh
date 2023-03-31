@@ -101,10 +101,12 @@ EOF
 fi
 
 ### python virtual environment
-PYTHON_ENV_PATH=${WORK_PATH}/python_env
-sudo rm -rf ${PYTHON_ENV_PATH}
-mkdir -p ${PYTHON_ENV_PATH}
-virtualenv ${PYTHON_ENV_PATH}
+if [[ ! -d ${WORK_PATH}/python_env ]]; then
+    PYTHON_ENV_PATH=${WORK_PATH}/python_env
+    sudo rm -rf ${PYTHON_ENV_PATH}
+    mkdir -p ${PYTHON_ENV_PATH}
+    virtualenv ${PYTHON_ENV_PATH}
+fi
 
 ### add pip repository mirror 
 if ! grep -Fq "tsinghua" /etc/pip.conf; then
@@ -140,6 +142,6 @@ if ! service --status-all | grep -Fq 'v2raya'; then
 fi
 
 # update firmware
-sudo rpi-update
+#sudo rpi-update
 sudo rpi-eeprom-update -a
 
