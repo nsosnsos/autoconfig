@@ -13,9 +13,9 @@ WORK_PATH=${HOME_PATH}/Workspace
 ### add apt repository mirror
 if ! grep -Fq "tsinghua" /etc/apt/sources.list; then
     sudo chmod 666 /etc/apt/sources.list
-    sudo sed -i '/^deb/s/^/#/' /etc/apt/sources.list
+    sudo sed -i 's|^deb|# &|g' /etc/apt/sources.list
     sudo cat >> /etc/apt/sources.list <<EOF
-#deb https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ bullseye main contrib non-free rpi
+# deb https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ bullseye main contrib non-free rpi
 deb [arch=arm64] https://mirrors.tuna.tsinghua.edu.cn/raspbian/multiarch/ bullseye main
 EOF
     sudo chmod 644 /etc/apt/sources.list
@@ -24,7 +24,7 @@ fi
 ### remove raspberry repository source
 if ! grep -Fq "tsinghua" /etc/apt/sources.list.d/raspi.list; then
     sudo chmod 666 /etc/apt/sources.list.d/raspi.list
-    sudo sed -i '/^deb/s/^/#/' /etc/apt/sources.list.d/raspi.list
+    sudo sed -i 's|^deb|# &|g' /etc/apt/sources.list.d/raspi.list
     sudo cat >> /etc/apt/sources.list.d/raspi.list <<EOF
 deb http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ bullseye main
 EOF
@@ -44,9 +44,9 @@ sudo apt-get autopurge -y
 ### install necessary software
 sudo apt-get install -y tree net-tools xrdp ntpdate ca-certificates
 sudo apt-get install -y openssl python3-virtualenv
-sudo apt-get install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
-sudo apt-get install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
-sudo apt-get install -y vim vim-scripts vim-doc vim-addon-manager
+#sudo apt-get install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
+#sudo apt-get install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+#sudo apt-get install -y vim vim-scripts vim-doc vim-addon-manager
 #vim-addons install omnicppcomplete
 #vim-addons install minibufexplorer
 #vim-addons install winmanager
