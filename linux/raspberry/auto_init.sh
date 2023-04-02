@@ -44,6 +44,7 @@ sudo apt-get autopurge -y
 ### install necessary software
 sudo apt-get install -y tree net-tools xrdp ntpdate ca-certificates
 sudo apt-get install -y openssl python3-virtualenv
+sudo apt-get install -y fonts-arphic-ukai fonts-arphic-uming im-config libscim8v5 scim scim-gtk-immodule scim-im-agent scim-modules-socket scim-pinyin
 #sudo apt-get install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
 #sudo apt-get install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
 #sudo apt-get install -y vim vim-scripts vim-doc vim-addon-manager
