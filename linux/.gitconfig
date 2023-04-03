@@ -11,6 +11,9 @@
 	autocrlf = false
 	excludesfile = ~/.gitignore
 
+[pull]
+	rebase = true
+
 [merge]
 	tool = vimdiff
 
@@ -34,6 +37,7 @@
 #git config --global core.quotepath false
 #git config --global core.autocrlf false
 #git config --global core.excludesfile "~/.gitignore"
+#git config --global pull.rebase true
 #git config --global merge.tool vimdiff
 #git config --global i18n.commitencoding utf-8
 #git config --global i18n.logoutputencoding utf-8
