@@ -57,7 +57,11 @@ sudo cp arch/${ARCH_NAME}/boot/dts/overlays/README /boot/overlays/
 sudo cp arch/${ARCH_NAME}/boot/${IMAGE} /boot/${KERNEL_VERSION}.img
 
 # change boot kernel
-echo "kernel=${KERNEL_VERSION}.img" | sudo tee -a /boot/config.txt
+if ! grep -Fq "kernel=" /boot/config.txt; then
+    echo "kernel=${KERNEL_VERSION}.img" | sudo tee -a /boot/config.txt
+else
+    sudo sed -i "s|kernel=.*\.img|kernel=${KERNEL_VERSION}.img|g" /boot/config.txt
+fi
 echo "New kernel ${KERNEL_VERSION} is ready, please check /boot/${KERNEL_VERSION}.img and /boot/config.txt"
 echo "You may reboot to run new kernel."
 
