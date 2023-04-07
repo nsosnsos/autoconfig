@@ -32,3 +32,7 @@ bash ${SCRIPT_PATH}/notebook/nb_auto.sh uninstall
 echo "cleanup mariadb ..."
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh uninstall
 
+### Install and config redis
+echo "cleanup redis ..."
+bash ${SCRIPT_PATH}/redis/redis_auto.sh uninstall
+

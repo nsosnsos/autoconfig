@@ -48,6 +48,9 @@ bash ${SCRIPT_PATH}/notebook/nb_auto.sh install ${DOMAIN_NAME}
 ### Install and config mariadb
 bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh install
 
+### Install and config redis
+bash ${SCRIPT_PATH}/redis/redis_auto.sh install
+
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ${CUR_USER} *****"
 echo "***** REBOOT PLEASE *****"
