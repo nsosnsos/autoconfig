@@ -19,6 +19,10 @@ set history=50
 set mouse=a
 set expandtab
 set noswapfile
+"gqG formats the text starting from the current position and to the end of the file.
+"It will automatically join consecutive lines when possible.
+"You can place a blank line between two lines if you don't want those two to be joined together.
+set textwidth=80
  
 "--- search config ---
 set ignorecase smartcase
