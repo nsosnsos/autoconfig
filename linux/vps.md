@@ -13,7 +13,7 @@ git clone git@github.com:${PARA_USER}/autoconfig.git
 |:--:|:----------------------------------:|
 | 1  | [VM1](https://127.0.0.1/)|
 | 2  | [VM2](https://127.0.0.1/)|
-| 3  | [VM2](https://127.0.0.1/)|
+| 3  | [VM3](https://127.0.0.1/)|
 
 ---
 
