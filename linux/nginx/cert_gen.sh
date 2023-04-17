@@ -31,7 +31,8 @@ if [ ! -d ${ACME_DIR} ]; then
 fi
 
 cd ${ACME_DIR}
-sudo ${ACME_DIR}/${ACME_REPO} --install -m ${SITE_NAME}@${SITE_NAME}
+${ACME_DIR}/${ACME_REPO} --install -m ${SITE_NAME}@${SITE_NAME}
+${ACME_DIR}/${ACME_REPO} --set-default-ca --server zerossl
 ${ACME_DIR}/${ACME_REPO} --issue -d ${SITE_NAME} --nginx
 ${ACME_DIR}/${ACME_REPO} --install-cert -d ${SITE_NAME} --key-file ${CERT_PATH}/${SITE_NAME}.key --fullchain-file ${CERT_PATH}/${SITE_NAME}.cert --reloadcmd "service nginx force-reload"
 cd -
