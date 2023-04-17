@@ -4,40 +4,43 @@ set -e
 
 CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
-CERT_PATH=${HOME_PATH}/cert
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 WORK_DIR=workspace
-ACME_REPO=acme.sh
+CERT_SVC=certbot
 
 ### Check script parameters
-if [[ ${#} -ne 1 ]]; then
-    echo "Usage:     ${SCRIPT_NAME} SITE_NAME"
-    echo "Attention: You should have configured SITE_NAME correctly for nginx, and WWW-ROOT works well."
-    exit -1
+if [[ ${#} == 1 && ${1} == "uninstall" ]]; then
+    sudo apt purge certbot -y
+    sudo apt autoremove -y
+    exit 0
+elif [[ ${#} -eq 3 && ${1} == "install" ]]; then
+    CERT_PATH=${2}
+    SITE_NAME=${3}
 else
-    SITE_NAME=${1}
-    GITHUB_USER=$(git config user.name)
-    ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
+    echo "Usage:     ${SCRIPT_NAME} SITE_NAME"
+    echo "Attention: certificate generation succeed only if nginx is not installed or not running."
+    exit -1
 fi
 
-### Automated certificate generation and update
-if [ ! -d ${ACME_DIR} ]; then
-    echo "Downloading ${ACME_REPO} repository, you should have forked ${ACME_REPO}!"
-    mkdir -p ${HOME_PATH}/${WORK_DIR}
-    cd ${HOME_PATH}/${WORK_DIR}
-    git clone git@github.com:${GITHUB_USER}/${ACME_REPO}.git
-    cd -
+if [[ -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
+    echo "You have already have the certificate, no need to generate again."
+    exit 0
+else
+    sudo apt install ${CERT_SVC} -y
+    if type nginx > /dev/null 2>&1 ; then
+        sudo service nginx stop
+    fi
+    sudo ${CERT_SVC} certonly --standalone --non-interactive --agree-tos --email test@test.com -d ${SITE_NAME} -d www.${SITE_NAME}
+    sudo cp /etc/letsencrypt/live/${SITE_NAME}/fullchain.pem ${CERT_PATH}/${SITE_NAME}.cert
+    sudo cp /etc/letsencrypt/live/${SITE_NAME}/privkey.pem ${CERT_PATH}/${SITE_NAME}.key
+    if type nginx > /dev/null 2>&1 ; then
+        sudo service nginx reload
+        sudo service nginx start
+    fi
 fi
 
-cd ${ACME_DIR}
-${ACME_DIR}/${ACME_REPO} --install -m ${SITE_NAME}@${SITE_NAME}
-${ACME_DIR}/${ACME_REPO} --set-default-ca --server zerossl
-${ACME_DIR}/${ACME_REPO} --issue -d ${SITE_NAME} --nginx
-${ACME_DIR}/${ACME_REPO} --install-cert -d ${SITE_NAME} --key-file ${CERT_PATH}/${SITE_NAME}.key --fullchain-file ${CERT_PATH}/${SITE_NAME}.cert --reloadcmd "service nginx force-reload"
-cd -
-
-### Self-signed cetificate generation
+### Self-signed certificate generation
 #if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
 #    echo "Generating self signed certificate ..."
 #    mkdir -p ${CERT_PATH}
