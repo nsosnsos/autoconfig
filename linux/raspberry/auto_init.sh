@@ -37,18 +37,19 @@ echo "gpg --keyserver keyserver.ubuntu.com --recv-keys 123456789"
 echo "gpg --export --armor 123456789 | sudo apt-key add -"
 
 ### update and upgrade
-sudo apt-get update -y && sudo apt-get dist-upgrade -y
-sudo apt-get autoremove -y
-sudo apt-get autopurge -y
+sudo apt update -y && sudo apt dist-upgrade -y
+sudo apt autoremove -y
+sudo apt autopurge -y
 
 ### install necessary software
-sudo apt-get install -y vim tree net-tools xrdp ntpdate ca-certificates
-sudo apt-get install -y openssl python3-virtualenv
-#sudo apt-get install -y scim-chewing ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
-#sudo apt-get install -y fonts-arphic-ukai fonts-arphic-uming im-config libscim8v5 scim scim-gtk-immodule scim-im-agent scim-modules-socket scim-pinyin
-#sudo apt-get install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
-#sudo apt-get install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
-#sudo apt-get install -y vim vim-scripts vim-doc vim-addon-manager
+sudo apt --reinstall install -y libraspberrypi-bin
+sudo apt install -y vim tree net-tools xrdp ntpdate ca-certificates
+sudo apt install -y openssl python3-virtualenv
+#sudo apt install -y scim-chewing ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
+#sudo apt install -y fonts-arphic-ukai fonts-arphic-uming im-config libscim8v5 scim scim-gtk-immodule scim-im-agent scim-modules-socket scim-pinyin
+#sudo apt install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
+#sudo apt install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+#sudo apt install -y vim vim-scripts vim-doc vim-addon-manager
 #vim-addons install omnicppcomplete
 #vim-addons install minibufexplorer
 #vim-addons install winmanager
@@ -138,8 +139,8 @@ if ! service --status-all | grep -Fq 'v2raya'; then
     sudo systemctl disable v2ray --now
     wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/trusted.gpg.d/v2raya.asc
     echo "deb https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
-    sudo apt-get update -y
-    sudo apt-get install v2raya -y
+    sudo apt update -y
+    sudo apt install v2raya -y
     sudo systemctl enable v2raya.service
     sudo systemctl start v2raya.service
 fi
