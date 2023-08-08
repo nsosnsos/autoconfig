@@ -21,12 +21,12 @@ LINUX_PATH=${WORK_PATH}/linux
 
 # set kernel build variables
 if [[ ${#} -eq 1 && ${1} -eq 32 ]]; then
-	KERNEL=kernel7l
+    KERNEL=kernel7l
     IMAGE=zImage
     ARCH_NAME=arm
     DTS_DTB=
 elif [[ ${#} -eq 0 || (${#} -eq 1 && ${1} -eq 64) ]]; then
-	KERNEL=kernel8
+    KERNEL=kernel8
     IMAGE=Image.gz
     ARCH_NAME=arm64
     DTS_DTB="broadcom/"
