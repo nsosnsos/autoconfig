@@ -44,6 +44,7 @@ sudo apt autopurge -y
 ### install necessary software
 sudo apt --reinstall install -y libraspberrypi-bin
 sudo apt install -y vim tree net-tools xrdp ntpdate ca-certificates
+sudo apt install -y libblockdev-crypto2 libblockdev-mdraid2
 sudo apt install -y openssl python3-virtualenv
 #sudo apt install -y scim-chewing ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
 #sudo apt install -y fonts-arphic-ukai fonts-arphic-uming im-config libscim8v5 scim scim-gtk-immodule scim-im-agent scim-modules-socket scim-pinyin
