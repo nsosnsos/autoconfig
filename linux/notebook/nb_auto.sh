@@ -51,11 +51,11 @@ echo "y" | jupyter notebook --generate-config
 echo "[Set jupyter notebook password]"
 jupyter notebook password
 deactivate
-sed -i "s|# c.NotebookApp.ip = 'localhost'|c.NotebookApp.ip = '0.0.0.0'|g" ${NOTEBOOK_CONFIG_FILE}
-sed -i "s|# c.NotebookApp.port = 8888|c.NotebookApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
-sed -i "s|# c.NotebookApp.base_url = '/'|c.NotebookApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
-sed -i "s|# c.NotebookApp.allow_origin = ''|c.NotebookApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
-sed -i "s|# c.NotebookApp.tornado_settings = {}|c.NotebookApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.ip = 'localhost'|c.ServerApp.ip = '0.0.0.0'|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.port = 0|c.ServerApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.base_url = '/'|c.ServerApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.allow_origin = ''|c.ServerApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.tornado_settings = {}|c.ServerApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}
 
 echo "[Unit]
 Description=Jupyter Notebook
