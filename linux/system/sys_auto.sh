@@ -18,6 +18,10 @@ echo "${HOSTNAME}" | sudo tee /etc/hostname > /dev/null
 
 ### enable password login
 sudo sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+### enable keepalive
+sudo sed -i "s/#ClientAliveInterval 0/ClientAliveInterval 60/g" /etc/ssh/sshd_config
+sudo sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 0/g" /etc/ssh/sshd_config
+
 
 ### Update home config
 cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
