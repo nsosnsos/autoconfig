@@ -18,7 +18,7 @@ elif [[ ${#} -eq 3 && ${1} == "install" ]]; then
     CERT_PATH=${2}
     SITE_NAME=${3}
 else
-    echo "Usage:     ${SCRIPT_NAME} SITE_NAME"
+    echo "Usage:     ${SCRIPT_NAME} install/uninstall CERT_PATH SITE_NAME"
     echo "Attention: certificate generation succeed only if nginx is not installed or not running."
     exit -1
 fi
@@ -32,11 +32,13 @@ else
         sudo service nginx stop
     fi
     sudo ${CERT_SVC} certonly --standalone --non-interactive --agree-tos --email test@test.com -d ${SITE_NAME} -d www.${SITE_NAME}
+    if [[ ! -d ${CERT_PATH} ]]; then
+        mkdir -p ${CERT_PATH}
+    fi
     sudo cp /etc/letsencrypt/live/${SITE_NAME}/fullchain.pem ${CERT_PATH}/${SITE_NAME}.cert
     sudo cp /etc/letsencrypt/live/${SITE_NAME}/privkey.pem ${CERT_PATH}/${SITE_NAME}.key
     if type nginx > /dev/null 2>&1 ; then
-        sudo service nginx reload
-        sudo service nginx start
+        sudo service nginx restart
     fi
 fi
 
