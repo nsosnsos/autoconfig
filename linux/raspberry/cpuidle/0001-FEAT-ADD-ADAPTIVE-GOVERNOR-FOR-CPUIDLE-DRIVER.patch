@@ -1,0 +1,252 @@
+From 66fa2a73e1bd3558ea597ee3c62dcbc7e25b574e Mon Sep 17 00:00:00 2001
+From: nsosnsos <nsosnsos@gmail.com>
+Date: Mon, 14 Aug 2023 16:03:09 +0800
+Subject: [PATCH] FEAT: ADD ADAPTIVE GOVERNOR FOR CPUIDLE DRIVER
+
+add adaptive governor for cpuidle driver.
+---
+ drivers/cpuidle/Kconfig            |   9 +-
+ drivers/cpuidle/governors/Makefile |   1 +
+ drivers/cpuidle/governors/adapt.c  | 194 +++++++++++++++++++++++++++++
+ 3 files changed, 203 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/cpuidle/governors/adapt.c
+
+diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
+index ff71dd662..83f33d3cb 100644
+--- a/drivers/cpuidle/Kconfig
++++ b/drivers/cpuidle/Kconfig
+@@ -5,7 +5,7 @@ config CPU_IDLE
+ 	bool "CPU idle PM support"
+ 	default y if ACPI || PPC_PSERIES
+ 	select CPU_IDLE_GOV_LADDER if (!NO_HZ && !NO_HZ_IDLE)
+-	select CPU_IDLE_GOV_MENU if (NO_HZ || NO_HZ_IDLE) && !CPU_IDLE_GOV_TEO
++	select CPU_IDLE_GOV_MENU if (NO_HZ || NO_HZ_IDLE) && !CPU_IDLE_GOV_TEO && !CPU_IDLE_GOV_ADAPT
+ 	help
+ 	  CPU idle is a generic framework for supporting software-controlled
+ 	  idle processor power management.  It includes modular cross-platform
+@@ -44,6 +44,13 @@ config CPU_IDLE_GOV_HALTPOLL
+ 
+ 	  Some virtualized workloads benefit from using it.
+ 
++config CPU_IDLE_GOV_ADAPT
++	bool "Adaptive governor (for tickless systems)"
++    help
++      This governor implements adaptive idle state selection method, based
++      on predictive idle period and compulsive latency request, and taking
++      next timer event into account simultaneously.
++
+ config DT_IDLE_STATES
+ 	bool
+ 
+diff --git a/drivers/cpuidle/governors/Makefile b/drivers/cpuidle/governors/Makefile
+index 63abb5393..a00682690 100644
+--- a/drivers/cpuidle/governors/Makefile
++++ b/drivers/cpuidle/governors/Makefile
+@@ -7,3 +7,4 @@ obj-$(CONFIG_CPU_IDLE_GOV_LADDER) += ladder.o
+ obj-$(CONFIG_CPU_IDLE_GOV_MENU) += menu.o
+ obj-$(CONFIG_CPU_IDLE_GOV_TEO) += teo.o
+ obj-$(CONFIG_CPU_IDLE_GOV_HALTPOLL) += haltpoll.o
++obj-$(CONFIG_CPU_IDLE_GOV_ADAPT) += adapt.o
+diff --git a/drivers/cpuidle/governors/adapt.c b/drivers/cpuidle/governors/adapt.c
+new file mode 100644
+index 000000000..8925d984a
+--- /dev/null
++++ b/drivers/cpuidle/governors/adapt.c
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Adaptive CPU idle governor
++ *
++ * Copyright (C) 2023 Stan Lee <nsosnsos@gmail.com>
++ * Author: Stan Lee <nsosnsos@gmail.com>
++ */
++
++/**
++ * DOC: adapt-description
++ *
++ * Adaptive CPU idle governor that select idle state according to recent sleep
++ * length and next timer, also considering the latency request.
++ *
++ */
++
++#include <linux/cpuidle.h>
++#include <linux/kernel.h>
++#include <linux/tick.h>
++
++
++#define INTERVAL_COUNT 8
++#define INTERVAL_SHIFT 3
++
++
++struct adapt_device {
++	s64	sleep_length_ns;
++	u32	intervals[INTERVAL_COUNT];
++	s32	interval_ptr;
++
++};
++
++static DEFINE_PER_CPU(struct adapt_device, adapt_devices);
++
++
++/**
++ * Get average of idle statistics.
++ */
++static unsigned int get_avg_idle_stats(struct adapt_device *data)
++{
++	int	i;
++	u32	avg;
++	u64	sum = 0;
++	for (i = 0; i < INTERVAL_COUNT; i++) {
++		sum += data->intervals[i];
++	}
++	avg = sum >> INTERVAL_SHIFT;
++	return avg;
++}
++
++/**
++ * adapt_update - update metrics after wakeup
++ * @drv: cpuidle driver containing state data
++ * @dev: the CPU
++ */
++static void adapt_update(struct cpuidle_driver *drv, struct cpuidle_device *dev)
++{
++	struct adapt_device *data = this_cpu_ptr(&adapt_devices);
++	u64	measured_ns = 0;
++	/*
++	 * If the wakeup was triggered by time polling or tick after long time,
++	 * measured time might be the same as next timer.
++	 * Or just get the last residency from device.
++	 */
++	if (dev->poll_time_limit ||
++	    (tick_nohz_idle_got_tick() && data->sleep_length_ns > TICK_NSEC)) {
++		dev->poll_time_limit = false;
++		measured_ns = data->sleep_length_ns;
++	} else {
++		measured_ns = dev->last_residency_ns;
++	}
++
++	data->intervals[data->interval_ptr++] = ktime_to_us(measured_ns);
++	if (data->interval_ptr >= INTERVAL_COUNT)
++		data->interval_ptr = 0;
++}
++
++/**
++ * adapt_select - select the next idle state to enter
++ * @drv: cpuidle driver containing state data
++ * @dev: the CPU
++ * @stop_tick: indication on whether or not to stop the tick
++ */
++static int adapt_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
++			bool *stop_tick)
++{
++	struct adapt_device *data = this_cpu_ptr(&adapt_devices);
++	s64	latency_req = cpuidle_governor_latency_req(dev->cpu);
++	s64	sleep_length_ns;
++	s64	avg_record_us;
++	s64	predicted_ns;
++	ktime_t	delta_tick;
++	int	target_idx, i;
++
++	if (dev->last_state_idx >= 0) {
++		adapt_update(drv, dev);
++		dev->last_state_idx = -1;
++	}
++
++	sleep_length_ns = tick_nohz_get_sleep_length(&delta_tick);
++	if (unlikely(sleep_length_ns < 0)) {
++		sleep_length_ns = 0;
++		delta_tick = 0;
++	}
++	data->sleep_length_ns = sleep_length_ns;
++
++	/*
++	 * Under some conditions, there is no way to get into deeper state.
++	 */
++	if (unlikely(drv->state_count <= 1 || latency_req == 0) ||
++	    ((sleep_length_ns < drv->states[1].target_residency_ns ||
++	      latency_req < drv->states[1].exit_latency_ns) &&
++	     !dev->states_usage[0].disable)) {
++		*stop_tick = !(drv->states[0].flags & CPUIDLE_FLAG_POLLING);
++		return 0;
++	}
++
++	avg_record_us = get_avg_idle_stats(data);
++	predicted_ns = min(sleep_length_ns, avg_record_us * NSEC_PER_USEC);
++
++	/*
++	 * Find the idle state with the lowest power while satisfying
++	 * our constraints.
++	 */
++	target_idx = 0;
++	for (i = 1; i < drv->state_count; i++) {
++		struct cpuidle_state *s = &drv->states[i];
++
++		if (dev->states_usage[i].disable)
++		      continue;
++
++		if (latency_req < s->exit_latency_ns)
++		      continue;
++
++		if (predicted_ns < s->target_residency_ns) {
++			if (data->sleep_length_ns < s->target_residency_ns)
++			      continue;
++			predicted_ns = data->sleep_length_ns;
++		}
++
++		target_idx = i;
++	}
++
++	/*
++	 * Don't stop the tick if the selected state is a polling one or if
++	 * the expected idle period is shorter than the tick period.
++	 */
++	if (((drv->states[target_idx].flags & CPUIDLE_FLAG_POLLING) ||
++	     predicted_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
++		*stop_tick = false;
++	}
++
++	return target_idx;
++}
++
++/**
++ * adapt_reflect - records that data structures need update
++ * @dev: the CPU
++ * @index: the index of actual entered state
++ */
++static void adapt_reflect(struct cpuidle_device *dev, int index)
++{
++	dev->last_state_idx = index;
++}
++
++/**
++ * adapt_enable_device - initialize the governor for the CPU device
++ * @drv: cpuidle driver (not used)
++ * @dev: the CPU
++ */
++static int adapt_enable_device(struct cpuidle_driver *drv,
++			       struct cpuidle_device *dev)
++{
++	struct adapt_device *data = this_cpu_ptr(&adapt_devices);
++
++	memset(data, 0, sizeof(struct adapt_device));
++
++	return 0;
++}
++
++static struct cpuidle_governor adapt_governor = {
++	.name =		"adapt",
++	.rating =	18,
++	.enable =	adapt_enable_device,
++	.select =	adapt_select,
++	.reflect =	adapt_reflect,
++};
++
++static int __init adapt_governor_init(void)
++{
++	return cpuidle_register_governor(&adapt_governor);
++}
++
++postcore_initcall(adapt_governor_init);
+-- 
+2.30.2
+
