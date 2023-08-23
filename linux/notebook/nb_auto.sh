@@ -9,6 +9,7 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 NOTEBOOK_CONFIG_PATH=${HOME_PATH}/.jupyter
 NOTEBOOK_CONFIG_FILE=${NOTEBOOK_CONFIG_PATH}/jupyter_notebook_config.py
 NOTEBOOK_ENV_PATH=${NOTEBOOK_CONFIG_PATH}/python_env
+HASH_PWD_SCRIPT="hash_passwd.py"
 
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
@@ -48,14 +49,27 @@ sudo chown ${CUR_USER}:${CUR_USER} ${NOTEBOOK_WORK_PATH}
 sudo chmod 777 ${NOTEBOOK_WORK_PATH}
 
 echo "y" | jupyter notebook --generate-config
-echo "[Set jupyter notebook password]"
-jupyter notebook password
-deactivate
 sed -i "s|# c.ServerApp.ip = 'localhost'|c.ServerApp.ip = '0.0.0.0'|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.port = 0|c.ServerApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.base_url = '/'|c.ServerApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.allow_origin = ''|c.ServerApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.tornado_settings = {}|c.ServerApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}
+
+read -p "[Set jupyter notebook password]" -s NOTEBOOK_PASSWD
+echo ""
+#HASHED_NOTEBOOK_PASSWD="SHA256:$(echo -n ${NOTEBOOK_PASSWD} | sha256sum | awk '{print $1}')"
+HASHED_NOTEBOOK_PASSWD=$(${SCRIPT_PATH}/${HASH_PWD_SCRIPT} ${NOTEBOOK_PASSWD})
+if ! grep -Fq "PasswordConfiguration" ${NOTEBOOK_CONFIG_FILE}; then
+    cat >> ${NOTEBOOK_CONFIG_FILE} << EOF
+
+## PasswordConfiguration
+c.ServerApp.identity_provider_class = 'jupyter_server.auth.identity.PasswordIdentityProvider'
+c.ServerApp.PasswordIdentityProvider.password_required = True
+c.ServerApp.PasswordIdentityProvider.allow_password_change = True
+c.ServerApp.PasswordIdentityProvider.hashed_password = '${HASHED_NOTEBOOK_PASSWD}'
+
+EOF
+fi
 
 echo "[Unit]
 Description=Jupyter Notebook
@@ -74,4 +88,5 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /d
 sudo systemctl daemon-reload
 sudo systemctl enable notebook
 sudo systemctl restart notebook
+deactivate
 
