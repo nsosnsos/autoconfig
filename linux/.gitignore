@@ -3,6 +3,7 @@
 *.a
 *.so
 *.lo
+*.ko
 *.la
 *.sub
 *.tex
@@ -12,6 +13,7 @@
 *.pc
 *.bin
 *.elf
+*.cmd
 *.m4
 *.gz
 *.tar
