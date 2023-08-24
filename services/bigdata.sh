@@ -83,10 +83,10 @@ host_escape_password=`echo -ne $password| xxd -plain | tr -d '\n' | sed 's/\(..\
 
 
 echo "===== basic packages installation ====="
-apt-get update && apt-get upgrade -y
-apt-get install apt-transport-https
-apt-get install vim vim-scripts vim-doc vim-addon-manager
-apt-get install ctags cscope tree
+apt update && apt full-upgrade -y
+apt install apt-transport-https
+apt install vim vim-scripts vim-doc vim-addon-manager
+apt install ctags cscope tree
 
 echo "===== vim addons installation ====="
 vim-addons install omnicppcomplete
@@ -96,7 +96,7 @@ vim-addons install project
 vim-addons install taglist
 
 echo "===== nfs ====="
-apt-get install nfs-kernel-server
+apt install nfs-kernel-server
 cat >> /etc/exports <<EOF
 /projects *(rw,sync,no_subtree_check)
 systemctl restart nfs-server.service
@@ -108,18 +108,17 @@ echo "4. mount -o anon \\x.x.x.x\projects Z:"
 EOF
 
 echo "===== python packages installation ====="
-apt-get install build-essential libssl-dev libffi-dev python3-dev
-apt-get install python3-pip
+apt install build-essential libssl-dev libffi-dev python3-dev
+apt install python3-pip
 pip3 install numpy pandas matplotlib
 pip3 install sqlalchemy pymysql sshtunnel lxml openpyxl xlrd beautifulsoup4
-apt-get install graphviz libgraphviz-dev pkg-config
+apt install graphviz libgraphviz-dev pkg-config
 pip3 install pydot pygraphviz anytree networkx pyfpgrowth
 pip3 install tensorflow tensorboard captcha
 ln -s /usr/bin/python3.5 /usr/bin/python
 
 echo "===== sftp server installation ====="
-sudo apt-get update
-sudo apt-get install vsftpd
+sudo apt install vsftpd
 cp /etc/vsftpd.conf /etc/vsftpd.conf.origin
 USERLIST_FILE=/etc/vsftpd.userlist
 sudo useradd -m -c "SFTP user" -s /bin/bash sftpuser
@@ -178,14 +177,14 @@ sudo systemctl restart vsftpd
 
 echo "===== docker installation ====="
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-apt-get update
-apt-get install docker-engine
+apt update
+apt install docker-engine
 systemctl enable docker
 service docker start
 docker version
 
 echo "===== kubernetes installation ====="
-apt-get install -y kubelet kubeadm kubectl
+apt install -y kubelet kubeadm kubectl
 ## kubernetes config
 #swapoff –a
 #comment swap in /etc/fstab
@@ -222,7 +221,7 @@ apt-get install -y kubelet kubeadm kubectl
 #kubectl logs kubernetes-dashboard -n kube-system
 
 echo "===== java installation ====="
-apt-get install openjdk-8-jre openjdk-8-jdk
+apt install openjdk-8-jre openjdk-8-jdk
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 JRE_HOME=${JAVA_HOME}/jre
 CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
@@ -244,7 +243,7 @@ HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin
 ## hadoop config
-apt-get install ufw
+apt install ufw
 ufw disable
 chown hadoop:hadoop -R ${HDFSHOME}
 mkdir -p ${HDFSHOME}/hadoop/tmp

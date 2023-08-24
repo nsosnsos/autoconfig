@@ -3,7 +3,7 @@ set -e
 set -x
 
 echo "==================== STAGE 1 ===================="
-sudo apt-get -y install rsync dosfstools parted kpartx exfat-fuse
+sudo apt -y install rsync dosfstools parted kpartx exfat-fuse
 
 backup_dir=/mnt
 if [ "$#" -lt 1 ]; then

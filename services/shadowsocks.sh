@@ -6,7 +6,7 @@ set -x
 config_file=/home/ubuntu/shadowsocks.conf
 service_file=/etc/systemd/system/shadowsocks.service
 
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt update && sudo apt full-upgrade -y
 sudo pip3 install --upgrade pip
 sudo rm -rf /usr/bin/pip3
 sudo ln -s /usr/local/bin/pip3.6 /usr/bin/pip3

@@ -37,7 +37,7 @@ echo "gpg --keyserver keyserver.ubuntu.com --recv-keys 123456789"
 echo "gpg --export --armor 123456789 | sudo apt-key add -"
 
 ### update and upgrade
-sudo apt update -y && sudo apt dist-upgrade -y
+sudo apt update -y && sudo apt full-upgrade -y
 sudo apt autoremove -y
 sudo apt autopurge -y
 
@@ -46,10 +46,9 @@ sudo apt --reinstall install -y libraspberrypi-bin
 sudo apt install -y vim tree net-tools xrdp ntpdate ca-certificates
 sudo apt install -y libblockdev-crypto2 libblockdev-mdraid2 accountsservice
 sudo apt install -y openssl python3-virtualenv
-#sudo apt install -y scim-chewing ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
-#sudo apt install -y fonts-arphic-ukai fonts-arphic-uming im-config libscim8v5 scim scim-gtk-immodule scim-im-agent scim-modules-socket scim-pinyin
-#sudo apt install -y ttf-wqy-zenhei ttf-wqy-microhei xfonts-wqy
-#sudo apt install -y fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+sudo apt install -y fcitx-googlepinyin
+
+### vim config
 #sudo apt install -y vim vim-scripts vim-doc vim-addon-manager
 #vim-addons install omnicppcomplete
 #vim-addons install minibufexplorer

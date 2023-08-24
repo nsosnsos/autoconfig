@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo apt-get install automake autoconf libcurl4-openssl-dev
+sudo apt install automake autoconf libcurl4-openssl-dev
 cd ~/Workspace
 git clone https://github.com/pooler/cpuminer.git
 cd cpuminer

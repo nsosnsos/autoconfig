@@ -59,8 +59,8 @@ EOF
 fi
 
 ### Update and install software
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install -y net-tools ntpdate openssl python3-virtualenv tree
+sudo apt update -y && sudo apt full-upgrade -y
+sudo apt install -y net-tools ntpdate openssl python3-virtualenv tree
 
 ### Set timezone and synchronize with ntp server
 sudo ntpdate -u ntp.ubuntu.com
@@ -77,7 +77,7 @@ sudo iptables -P INPUT ACCEPT
 sudo iptables -P FORWARD ACCEPT
 sudo iptables -P OUTPUT ACCEPT
 sudo iptables -F
-sudo apt-get purge netfilter-persistent -y
+sudo apt purge netfilter-persistent -y
 
 ### Enable tcp bbr
 modprobe tcp_bbr
