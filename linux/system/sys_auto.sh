@@ -6,11 +6,35 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+WORKSPACE="workspace"
+IDLE_LOAD="idle_load"
 
-if [[ -f "${HOME_PATH}/.vimrc" ]]; then
-    echo "system is already initialized !!!"
-    exit 0
+### Check script parameters
+if [[ ${#} -eq 1 && ${1} == "install" ]]; then
+    if grep -Fq "personalized" ${HOME_PATH}/.bashrc; then
+        echo "system is already initialized !!!"
+        exit 0
+    fi
+elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
+    if ! grep -Fq "personalized" ${HOME_PATH}/.bashrc; then
+        echo "system is not initialized yet !!!"
+        exit 0
+    else
+        rm -f ${HOME_PATH}/.gitconfig
+        rm -f ${HOME_PATH}/.gitignore
+        rm -f ${HOME_PATH}/.gitmessage
+        rm -f ${HOME_PATH}/.vimrc
+        rm -rf ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}
+        rm -rf ${PYTHON_ENV_PATH}
+	BASHRC_LINE_NO=$(($(sed -n -e'/personalized/=' ${HOME_PATH}/.bashrc) - 1))
+        sed -i "1,${BASHRC_LINE_NO}!d" ${HOME_PATH}/.bashrc
+        exit 0
+    fi
+else
+    echo "Usage: ${SCRIPT_NAME} install/uninstall"
+    exit -1
 fi
+
 
 ### set hostname
 read -p "Enter hostname: " HOSTNAME
@@ -31,14 +55,17 @@ cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 read -p "Enter github mail address: " GITHUB_EMAIL
 readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
-export GITHUB_USER
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
+
+### Add idle load
+mkdir -p ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}
+cp ${SCRIPT_PATH}/${IDLE_LOAD}/idle.c ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/
+gcc -o ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/idle ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/idle.c
 
 ### Set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
     cat >> ${HOME_PATH}/.bashrc <<EOF
-
 # personalized prompt sign
 COLOR_RED='\[\e[1;31m\]'
 COLOR_NULL='\[\e[0m\]'
@@ -46,6 +73,9 @@ PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
 # remove bash history after logout
 rm -rf ~/.bash_history
+
+# set idle load alias
+alias idle='nohup ~/workspace/idle_load/idle > /dev/null 2>&1 &'
 
 EOF
 fi
@@ -94,12 +124,11 @@ sudo sysctl -p
 ## verify tcp bbr
 echo "Verify TCP BBR"
 sysctl net.ipv4.tcp_available_congestion_control
-#sysctl net.ipv4.tcp_congestion_control
+sysctl net.ipv4.tcp_congestion_control
 lsmod | grep bbr
 
 ### Python virtual environment
 PYTHON_ENV_PATH=${HOME_PATH}/python_env
-sudo rm -rf ${PYTHON_ENV_PATH}
 mkdir -p ${PYTHON_ENV_PATH}
 virtualenv ${PYTHON_ENV_PATH}
 

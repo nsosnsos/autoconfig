@@ -7,9 +7,9 @@ HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
-### System config remains, only remove vimrc
-echo "cleanup vim config ..."
-rm ${HOME_PATH}/.vimrc -f
+### System config remains, only remove bash and git config
+echo "cleanup system config ..."
+bash ${SCRIPT_PATH}/system/sys_auto.sh uninstall
 
 ### Install and config nginx
 echo "cleanup nginx ..."
@@ -21,7 +21,6 @@ bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh uninstall
 
 ### Install and config v2ray
 echo "cleanup v2ray ..."
-GITHUB_USER=$(git config user.name)
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh uninstall
 
 ### Install and config jupyter notebook

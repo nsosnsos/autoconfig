@@ -37,7 +37,7 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         exit 0
     fi
 else
-    echo "Usage: ${SCRIPT_NAME}: install/uninstall [SITE_NAME]"
+    echo "Usage: ${SCRIPT_NAME} install/uninstall [SITE_NAME]"
     exit -1
 fi
 

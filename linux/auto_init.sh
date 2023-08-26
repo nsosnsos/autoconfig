@@ -20,17 +20,17 @@ else
 fi
 
 echo "=== Begin to config vps automatically ..."
-echo "=== Note: You should run it with current user with sudo priviledge."
+echo "=== Note: You should run it at current user with sudo priviledge."
 echo "===       First, it will update your system and optimize vps instance."
-echo "===       Second, it will deploy nginx, shellinabox, v2ray, jupyter notebook and mariadb."
+echo "===       Second, it will deploy nginx, shellinabox, v2ray, jupyter notebook mariadb and redis."
 echo "===       Third, it will download fhs-install-v2ray repository in workspace if not exists."
 echo "===       If you have not forked fhs-install-v2ray in your github repos, v2ray installation would fail."
 echo "===       If you provide a domain name, it will config v2ray with websocket."
-echo "===       If no certificate provided, then self-signed certificate will be generated."
+echo "===       If domain name is not provided, then self-signed certificate could be generated."
 echo "===       Good luck !"
 
 ### System initialization
-bash ${SCRIPT_PATH}/system/sys_auto.sh
+bash ${SCRIPT_PATH}/system/sys_auto.sh install
 
 ### Install and config nginx
 bash ${SCRIPT_PATH}/nginx/nginx_auto.sh install ${DOMAIN_NAME}
