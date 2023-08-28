@@ -10,6 +10,13 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
 WORK_PATH=${HOME_PATH}/Workspace
 
+### remove unnecessary services
+# remove braille display service
+sudo systemctl stop brltty.service
+sudo systemctl disable brltty.service
+# remove smtp service
+sudo apt purge -y exim4-base exim4-config exim4-daemon-light
+
 ### add apt repository mirror
 if ! grep -Fq "tsinghua" /etc/apt/sources.list; then
     sudo chmod 666 /etc/apt/sources.list
@@ -145,6 +152,6 @@ if ! service --status-all | grep -Fq 'v2raya'; then
 fi
 
 # update firmware
-#sudo rpi-update
+sudo rpi-update
 sudo rpi-eeprom-update -a
 
