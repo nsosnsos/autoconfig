@@ -50,7 +50,7 @@ sudo apt autopurge -y
 
 ### install necessary software
 sudo apt --reinstall install -y libraspberrypi-bin
-sudo apt install -y vim tree net-tools xrdp ntpdate ca-certificates
+sudo apt install -y vim tree net-tools ntpdate ca-certificates
 sudo apt install -y libblockdev-crypto2 libblockdev-mdraid2 accountsservice
 sudo apt install -y openssl python3-virtualenv
 sudo apt install -y fcitx-googlepinyin
