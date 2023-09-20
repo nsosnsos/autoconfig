@@ -57,6 +57,7 @@ readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
+git config --global credential.helper "store --file ~/.git-credentials"
 
 ### Add idle load
 mkdir -p ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}
