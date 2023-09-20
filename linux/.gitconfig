@@ -22,7 +22,7 @@
 	logoutputencoding = utf-8
 
 [credential]
-	helper = wincred
+	helper = store --file ~/.git-credentials
 
 [push]
 	default = simple
@@ -41,7 +41,7 @@
 #git config --global merge.tool vimdiff
 #git config --global i18n.commitencoding utf-8
 #git config --global i18n.logoutputencoding utf-8
-#git config --global credential.helper wincred
+#git config --global credential.helper "store --file ~/.git-credentials"
 #git config --global push.default simple
 #git config --global commit.template "~/.gitmessage"
 
