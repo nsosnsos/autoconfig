@@ -82,6 +82,7 @@ readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
 sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
 sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
+git config --global credential.helper "store --file ~/.git-credentials"
 
 ### set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
