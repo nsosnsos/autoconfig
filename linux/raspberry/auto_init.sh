@@ -73,16 +73,26 @@ sudo ntpdate -u ntp.ubuntu.com
 sudo timedatectl set-timezone "Asia/Hong_Kong"
 
 ### update basic config
-cp ${SCRIPT_PATH}/../.gitconfig ${HOME_PATH}/
-cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
-cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
-cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 read -p "Enter github mail address: " GITHUB_EMAIL
 readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
-sudo sed -i "s/PARA_USER/${GITHUB_USER}/g" ${HOME_PATH}/.gitconfig
-sudo sed -i "s/PARA_EMAIL/${GITHUB_EMAIL}/g" ${HOME_PATH}/.gitconfig
+git config --global user.name "${GITHUB_USER}"
+git config --global user.email "${GITHUB_EMAIL}"
+git config --global color.ui true
+git config --global core.editor vim
+git config --global core.quotepath false
+git config --global core.autocrlf false
+git config --global core.excludesfile "~/.gitignore"
+git config --global pull.rebase true
+git config --global merge.tool vimdiff
+git config --global i18n.commitencoding utf-8
+git config --global i18n.logoutputencoding utf-8
 git config --global credential.helper "store --file ~/.git-credentials"
+git config --global push.default simple
+git config --global commit.template "~/.gitmessage"
+cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
+cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
+cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 
 ### set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
