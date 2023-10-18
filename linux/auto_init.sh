@@ -7,12 +7,30 @@ HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 
-if [ ${#} -gt 1 ]; then
-    echo "Usage: ${SCRIPT_NAME} [DOMAIN_NAME]"
+
+function help () {
+    echo "Usage: ${SCRIPT_NAME} [install|uninstall] [DOMAIN_NAME]"
     echo "Attention: DOMAIN_NAME is used for nginx server name."
     exit -1
-elif [ ${#} -eq 1 ]; then
-    DOMAIN_NAME=${1}
+}
+
+function auto_uninstall () {
+    bash ${SCRIPT_PATH}/redis/redis_auto.sh ${1}
+    bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${1}
+    bash ${SCRIPT_PATH}/notebook/nb_auto.sh ${1}
+    bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${1}
+    bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh ${1}
+    bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${1}
+    bash ${SCRIPT_PATH}/system/sys_auto.sh ${1}
+    exit -1
+}
+
+if [[ ${#} -lt 1 || ${#} -gt 2 || (${1} != 'install' && ${1} != 'uninstall') ]]; then
+    help
+elif [[ ${1} == 'uninstall' ]]; then
+    auto_uninstall ${1}
+elif [ ${#} -eq 2 ]; then
+    DOMAIN_NAME=${2}
     V2RAY_CONFIG_FILE=v2ray_config_ws.json
 else
     read -p "Enter domain name: " DOMAIN_NAME
@@ -30,26 +48,26 @@ echo "===       If domain name is not provided, then self-signed certificate cou
 echo "===       Good luck !"
 
 ### System initialization
-bash ${SCRIPT_PATH}/system/sys_auto.sh install
+bash ${SCRIPT_PATH}/system/sys_auto.sh ${1}
 
 ### Install and config nginx
-bash ${SCRIPT_PATH}/nginx/nginx_auto.sh install ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${1} ${DOMAIN_NAME}
 
 ### Install and config shellinabox
-bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh install
+bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh ${1}
 
 ### Install and config v2ray
 GITHUB_USER=$(git config user.name)
-bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh install ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
+bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${1} ${GITHUB_USER} ${SCRIPT_PATH}/v2ray/${V2RAY_CONFIG_FILE}
 
 ### Install and config jupyter notebook
-bash ${SCRIPT_PATH}/notebook/nb_auto.sh install ${DOMAIN_NAME}
+bash ${SCRIPT_PATH}/notebook/nb_auto.sh ${1} ${DOMAIN_NAME}
 
 ### Install and config mariadb
-bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh install
+bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${1}
 
 ### Install and config redis
-bash ${SCRIPT_PATH}/redis/redis_auto.sh install
+bash ${SCRIPT_PATH}/redis/redis_auto.sh ${1}
 
 ### SET PASSWORD
 echo "***** CHANGE PASSWORD FOR root & ${CUR_USER} *****"
