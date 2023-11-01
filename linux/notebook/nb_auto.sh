@@ -11,13 +11,12 @@ NOTEBOOK_CONFIG_FILE=${NOTEBOOK_CONFIG_PATH}/jupyter_notebook_config.py
 NOTEBOOK_ENV_PATH=${NOTEBOOK_CONFIG_PATH}/python_env
 HASH_PWD_SCRIPT="hash_passwd.py"
 
-if [[ ${#} -eq 2 && ${1} == "install" ]]; then
+if [[ ${#} -eq 1 && ${1} == "install" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
         echo "notebook is already installed !!!"
         exit 0
     else
-        SITE_NAME=${2}
-        NOTEBOOK_WORK_PATH=${HOME_PATH}/${SITE_NAME}/notebook
+        NOTEBOOK_WORK_PATH=${NOTEBOOK_CONFIG_PATH}/notebook
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if [[ -d ${NOTEBOOK_CONFIG_PATH} ]]; then
@@ -31,7 +30,7 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         exit 0
     fi
 else
-    echo "Usage: ${SCRIPT_NAME} install/uninstall [SITE_NAME]"
+    echo "Usage: ${SCRIPT_NAME} install/uninstall"
     exit -1
 fi
 

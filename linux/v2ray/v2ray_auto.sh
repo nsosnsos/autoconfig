@@ -9,18 +9,25 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 WORK_DIR=workspace
 V2RAY_REPO=fhs-install-v2ray
 V2RAY_DIR=${HOME_PATH}/${WORK_DIR}/${V2RAY_REPO}
+V2RAY_IP_CONF=v2ray_config.json
+V2RAY_DOMAIN_CONF=v2ray_config_ws.json
 
-if [[ ${#} -eq 3 && ${1} == "install" ]]; then
+if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
         echo "v2ray is already installed !!!"
         exit 0
     else
+        SITE_NAME=${2}
+        if [[ "${SITE_NAME}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+            CONF_FILE=${SCRIPT_PATH}/${V2RAY_IP_CONF}
+        else
+            CONF_FILE=${SCRIPT_PATH}/${V2RAY_DOMAIN_CONF}
+        fi
         if [ ! -f ${CONF_FILE} ]; then
             echo "There is no v2ray config file [${CONF_FILE}] !!!"
             exit -1
         fi
-        GITHUB_USER=${2}
-        CONF_FILE=${3}
+        GITHUB_USER=$(git config user.name)
     fi
 elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
@@ -33,8 +40,9 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         exit 0
     fi
 else
-    echo "Usage: ${SCRIPT_NAME} install/uninstall [GITHUB_USER] [CONF_FILE]"
+    echo "Usage: ${SCRIPT_NAME} install/uninstall [SITE_NAME]"
     echo "       You should have repo at git@github.com:[GITHUB_USER]/${V2RAY_REPO}.git first !!!"
+    echo "       Or you need fork it at https://github.com/v2fly/fhs-install-v2ray !!!"
     exit -1
 fi
 
