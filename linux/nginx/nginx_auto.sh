@@ -7,6 +7,9 @@ HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 CERT_PATH=${HOME_PATH}/cert
+DOMAIN_CONF_FILE=nginx_domain.conf
+IP_CONF_FILE=nginx_ip.conf
+WEB_NAME=hallelujah
 
 ### Check script parameters
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
@@ -15,10 +18,16 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
         exit 0
     else
         SITE_NAME=${2}
+        if [[ "${SITE_NAME}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+            SITE_CONF_FILE=${SCRIPT_PATH}/${IP_CONF_FILE}
+            DOMAIN_CONFIG=0
+        else
+            SITE_CONF_FILE=${SCRIPT_PATH}/${DOMAIN_CONF_FILE}
+            DOMAIN_CONFIG=1
+        fi
         NGINX_PATH=/etc/nginx
         WORK_DIR=workspace
         ACME_DIR=${HOME_PATH}/${WORK_DIR}/${ACME_REPO}
-        SITE_CONF_FILE=${SCRIPT_PATH}/nginx.conf
         if [ ! -f ${SITE_CONF_FILE} ]; then
             echo "There is not nginx site conf file !!!"
             exit -1
@@ -45,8 +54,11 @@ fi
 if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
     echo "Generating certificate ..."
     mkdir -p ${CERT_PATH}
-    bash ${SCRIPT_PATH}/cert_gen.sh install ${CERT_PATH} ${SITE_NAME}
-    #openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.cert -keyout ${CERT_PATH}/${SITE_NAME}.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+    if [[ ${DOMAIN_CONFIG} -eq 1 ]]; then
+        bash ${SCRIPT_PATH}/cert_gen.sh install ${CERT_PATH} ${SITE_NAME}
+    else
+        openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.cert -keyout ${CERT_PATH}/${SITE_NAME}.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+    fi
 fi
 
 ### Install nginx
@@ -70,6 +82,7 @@ if ! grep -Fq "client_max_body_size" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|sendfile on;|sendfile on;\n\tclient_max_body_size 1024M;|g" ${NGINX_PATH}/nginx.conf
 fi
 sudo sed -i "s|SITE_NAME|${SITE_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|WEB_NAME|${WEB_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_PATH|${HOST_PATH}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_CERT|${CERT_PATH}/${SITE_NAME}.cert|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_KEY|${CERT_PATH}/${SITE_NAME}.key|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
