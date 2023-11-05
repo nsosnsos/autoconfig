@@ -6,7 +6,6 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
-WORK_DIR=workspace
 CERT_SVC=certbot
 
 ### Check script parameters

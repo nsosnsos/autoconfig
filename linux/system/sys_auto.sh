@@ -6,8 +6,7 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
-WORKSPACE="workspace"
-IDLE_LOAD="idle_load"
+IDLE_LOAD=${HOME_PATH}/workspace/idle_load
 
 ### Check script parameters
 if [[ ${#} -eq 1 && ${1} == "install" ]]; then
@@ -24,9 +23,8 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         rm -f ${HOME_PATH}/.gitignore
         rm -f ${HOME_PATH}/.gitmessage
         rm -f ${HOME_PATH}/.vimrc
-        rm -rf ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}
-        rm -rf ${PYTHON_ENV_PATH}
-	BASHRC_LINE_NO=$(($(sed -n -e'/personalized/=' ${HOME_PATH}/.bashrc) - 1))
+        rm -rf ${IDLE_LOAD}
+        BASHRC_LINE_NO=$(($(sed -n -e'/personalized/=' ${HOME_PATH}/.bashrc) - 1))
         sed -i "1,${BASHRC_LINE_NO}!d" ${HOME_PATH}/.bashrc
         exit 0
     fi
@@ -70,9 +68,9 @@ cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
 
 ### Add idle load
-mkdir -p ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}
-cp ${SCRIPT_PATH}/${IDLE_LOAD}/idle.c ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/
-gcc -o ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/idle ${HOME_PATH}/${WORKSPACE}/${IDLE_LOAD}/idle.c
+mkdir -p ${IDLE_LOAD}
+cp ${SCRIPT_PATH}/idle.c ${IDLE_LOAD}/
+gcc -o ${IDLE_LOAD}/idle ${IDLE_LOAD}/idle.c
 
 ### Set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
@@ -137,9 +135,4 @@ echo "Verify TCP BBR"
 sysctl net.ipv4.tcp_available_congestion_control
 sysctl net.ipv4.tcp_congestion_control
 lsmod | grep bbr
-
-### Python virtual environment
-PYTHON_ENV_PATH=${HOME_PATH}/python_env
-mkdir -p ${PYTHON_ENV_PATH}
-virtualenv ${PYTHON_ENV_PATH}
 

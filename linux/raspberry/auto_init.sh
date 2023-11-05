@@ -7,8 +7,9 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
-
 WORK_PATH=${HOME_PATH}/Workspace
+PYTHON_ENV_PATH=${HOME_PATH}/.python_env
+
 
 ### remove unnecessary services
 # remove braille display service
@@ -122,8 +123,7 @@ EOF
 fi
 
 ### python virtual environment
-if [[ ! -d ${WORK_PATH}/python_env ]]; then
-    PYTHON_ENV_PATH=${WORK_PATH}/python_env
+if [[ ! -d ${PYTHON_ENV_PATH} ]]; then
     sudo rm -rf ${PYTHON_ENV_PATH}
     mkdir -p ${PYTHON_ENV_PATH}
     virtualenv ${PYTHON_ENV_PATH}
