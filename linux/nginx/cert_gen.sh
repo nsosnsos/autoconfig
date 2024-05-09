@@ -12,6 +12,7 @@ CERT_SVC=certbot
 if [[ ${#} == 1 && ${1} == "uninstall" ]]; then
     sudo apt purge certbot -y
     sudo apt autoremove -y
+    rm -rf ${CERT_PATH}
     exit 0
 elif [[ ${#} -eq 3 && ${1} == "install" ]]; then
     CERT_PATH=${2}
