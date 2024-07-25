@@ -73,7 +73,7 @@ sudo service ssh restart
 sudo ntpdate -u ntp.ubuntu.com
 sudo timedatectl set-timezone "Asia/Hong_Kong"
 
-### update basic config
+### set git config
 read -p "Enter github mail address: " GITHUB_EMAIL
 readarray -d @ -t str_array <<< "${GITHUB_EMAIL}"
 GITHUB_USER="${str_array[0]}"
@@ -149,8 +149,14 @@ export no_proxy="localhost, 127.0.0.1, 192.168.*"
 EOF
 chmod u+x ${WORK_PATH}/proxy.sh
 
-# add pip repository mirror 
-# install v2ray and v2raya
+### disable cursor
+sudo apt install unclutter -y
+sudo cat > ${HOME_PATH}/.config/lxpanel/LXDE-pi/autostart <<EOF
+@lxpanel --profile LXDE
+@unclutter -idle 0
+EOF
+
+### install v2ray and v2raya
 if ! service --status-all | grep -Fq 'v2raya'; then
     curl -Ls https://mirrors.v2raya.org/go.sh | sudo bash
     sudo systemctl disable v2ray --now
