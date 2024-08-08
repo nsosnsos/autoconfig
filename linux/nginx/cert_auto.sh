@@ -8,15 +8,47 @@ SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 CERT_SVC=certbot
 
+function cron_add () {
+    read -p "input cert path: " CERT_PATH
+    read -p "input site name: " SITE_NAME
+    CRON_TAB=$(crontab -l) || true
+    CRON_JOB="0 0 * * 1 ${SCRIPT_PATH}/${SCRIPT_NAME} cron ${CERT_PATH} ${SITE_NAME}"
+    if echo "${CRON_TAB}" | grep -Fq "${SCRIPT_NAME}"; then
+        CRON_TAB=$(echo "${CRON_TAB}" | grep -Fqv "${SCRIPT_NAME}") || true
+    fi
+    if [[ -z "${CRON_TAB}" ]]; then
+        echo "${CRON_JOB}" | crontab -
+    else
+        (echo "${CRON_TAB}"; echo "${CRON_JOB}") | crontab -
+    fi
+}
+
+function cron_job () {
+    CERT_PATH=${1}
+    SITE_NAME=${2}
+    sudo rm -rf /etc/letsencrypt ${CERT_PATH}
+    ${SCRIPT_PATH}/${SCRIPT_NAME} install ${CERT_PATH} ${SITE_NAME}
+}
+
+
 ### Check script parameters
-if [[ ${#} == 1 && ${1} == "uninstall" ]]; then
+if [[ ${#} == 2 && ${1} == "uninstall" ]]; then
+    sudo rm -rf /etc/letsencrypt
     sudo apt purge certbot -y
     sudo apt autoremove -y
+    CERT_PATH=${2}
     rm -rf ${CERT_PATH}
     exit 0
 elif [[ ${#} -eq 3 && ${1} == "install" ]]; then
     CERT_PATH=${2}
     SITE_NAME=${3}
+elif [[ ${#} -ge 1 && ${1} == "cron" ]]; then
+    if [[ ${#} -ne 3 ]]; then
+        cron_add
+    else
+        cron_job ${2} ${3}
+    fi
+    exit 0
 else
     echo "Usage:     ${SCRIPT_NAME} install/uninstall CERT_PATH SITE_NAME"
     echo "Attention: certificate generation succeed only if nginx is not installed or not running."

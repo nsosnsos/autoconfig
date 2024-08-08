@@ -38,7 +38,7 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         echo "uninstalling nginx ..."
         sudo apt purge nginx-* -y
         sudo apt autoremove -y
-        bash ${SCRIPT_PATH}/cert_gen.sh uninstall
+        bash ${SCRIPT_PATH}/cert_auto.sh uninstall
         sudo rm -rf ${CERT_PATH}
         exit 0
     else
@@ -55,7 +55,7 @@ if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PAT
     echo "Generating certificate ..."
     mkdir -p ${CERT_PATH}
     if [[ ${DOMAIN_CONFIG} -eq 1 ]]; then
-        bash ${SCRIPT_PATH}/cert_gen.sh install ${CERT_PATH} ${SITE_NAME}
+        bash ${SCRIPT_PATH}/cert_auto.sh install ${CERT_PATH} ${SITE_NAME}
     else
         openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.cert -keyout ${CERT_PATH}/${SITE_NAME}.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
     fi
