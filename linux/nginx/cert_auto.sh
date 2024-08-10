@@ -11,15 +11,16 @@ CERT_SVC=certbot
 function cron_add () {
     read -p "input cert path: " CERT_PATH
     read -p "input site name: " SITE_NAME
-    CRON_TAB=$(crontab -l) || true
-    CRON_JOB="0 0 * * 1 ${SCRIPT_PATH}/${SCRIPT_NAME} cron ${CERT_PATH} ${SITE_NAME}"
-    if echo "${CRON_TAB}" | grep -Fq "${SCRIPT_NAME}"; then
-        CRON_TAB=$(echo "${CRON_TAB}" | grep -Fqv "${SCRIPT_NAME}") || true
+    CRON_JOB="0 2 1 * * ${SCRIPT_PATH}/${SCRIPT_NAME} cron ${CERT_PATH} ${SITE_NAME}"
+
+    if crontab -l 2>/dev/null | grep -Fq "${CRON_JOB}"; then
+        crontab -l | grep -Fv "${CRON_JOB}" | crontab -
     fi
-    if [[ -z "${CRON_TAB}" ]]; then
+
+    if [[ -z "$(crontab -l)" ]]; then
         echo "${CRON_JOB}" | crontab -
     else
-        (echo "${CRON_TAB}"; echo "${CRON_JOB}") | crontab -
+        (echo "$(crontab -l)"; echo "${CRON_JOB}") | crontab -
     fi
 }
 
