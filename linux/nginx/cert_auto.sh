@@ -27,8 +27,12 @@ function cron_add () {
 function cron_job () {
     CERT_PATH=${1}
     SITE_NAME=${2}
-    mv ${CERT_PATH}/${SITE_NAME}.cert ${CERT_PATH}/${SITE_NAME}.cert.bak
-    mv ${CERT_PATH}/${SITE_NAME}.key ${CERT_PATH}/${SITE_NAME}.key.bak
+    if [ -f ${CERT_PATH}/${SITE_NAME}.cert ]; then
+        mv ${CERT_PATH}/${SITE_NAME}.cert ${CERT_PATH}/${SITE_NAME}.cert.bak
+    fi
+    if [ -f ${CERT_PATH}/${SITE_NAME}.key ]; then
+        mv ${CERT_PATH}/${SITE_NAME}.key ${CERT_PATH}/${SITE_NAME}.key.bak
+    fi
     sudo rm -rf /etc/letsencrypt
     ${SCRIPT_PATH}/${SCRIPT_NAME} install ${CERT_PATH} ${SITE_NAME}
 }
