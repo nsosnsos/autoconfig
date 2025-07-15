@@ -6,7 +6,6 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
-IDLE_LOAD=${HOME_PATH}/workspace/idle_load
 
 ### Check script parameters
 if [[ ${#} -eq 1 && ${1} == "install" ]]; then
@@ -23,7 +22,6 @@ elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
         rm -f ${HOME_PATH}/.gitignore
         rm -f ${HOME_PATH}/.gitmessage
         rm -f ${HOME_PATH}/.vimrc
-        rm -rf ${IDLE_LOAD}
         BASHRC_LINE_NO=$(($(sed -n -e'/personalized/=' ${HOME_PATH}/.bashrc) - 1))
         sed -i "1,${BASHRC_LINE_NO}!d" ${HOME_PATH}/.bashrc
         exit 0
@@ -60,17 +58,11 @@ git config --global pull.rebase true
 git config --global merge.tool vimdiff
 git config --global i18n.commitencoding utf-8
 git config --global i18n.logoutputencoding utf-8
-git config --global credential.helper "store --file ~/.git-credentials"
 git config --global push.default simple
 git config --global commit.template "~/.gitmessage"
 cp ${SCRIPT_PATH}/../.gitignore ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.gitmessage ${HOME_PATH}/
 cp ${SCRIPT_PATH}/../.vimrc ${HOME_PATH}/
-
-### Add idle load
-mkdir -p ${IDLE_LOAD}
-cp ${SCRIPT_PATH}/idle.c ${IDLE_LOAD}/
-gcc -o ${IDLE_LOAD}/idle ${IDLE_LOAD}/idle.c
 
 ### Set bash prompt
 if ! grep -Fq "COLOR_NULL" ${HOME_PATH}/.bashrc; then
@@ -82,9 +74,6 @@ PS1="\$COLOR_RED[\u@\h \t] \w\$ \$COLOR_NULL"
 
 # remove bash history after logout
 rm -rf ~/.bash_history
-
-# set idle load alias
-alias idle='nohup ~/workspace/idle_load/idle > /dev/null 2>&1 &'
 
 EOF
 fi
@@ -111,7 +100,6 @@ sudo sed -i 's/#TCPKeepAlive yes/TCPKeepAlive yes/g' /etc/ssh/sshd_config
 sudo service ssh restart
 
 ### Stop firewall and disable route rules
-sudo ufw disable
 sudo iptables -P INPUT ACCEPT
 sudo iptables -P FORWARD ACCEPT
 sudo iptables -P OUTPUT ACCEPT
@@ -119,7 +107,7 @@ sudo iptables -F
 sudo apt purge netfilter-persistent -y
 
 ### Enable tcp bbr
-modprobe tcp_bbr
+sudo modprobe tcp_bbr
 if ! grep -Fq "tcp_bbr" /etc/modules-load.d/modules.conf; then
     echo "tcp_bbr" | sudo tee --append /etc/modules-load.d/modules.conf > /dev/null
 fi
@@ -135,7 +123,4 @@ echo "Verify TCP BBR"
 sysctl net.ipv4.tcp_available_congestion_control
 sysctl net.ipv4.tcp_congestion_control
 lsmod | grep bbr
-
-### Remove advertisement
-sudo dpkg-divert --divert /etc/apt/apt.conf.d/20apt-esm-hook.conf.bak --rename --local /etc/apt/apt.conf.d/20apt-esm-hook.conf
 

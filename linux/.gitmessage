@@ -26,6 +26,5 @@
 #    Use the body to explain what and why vs. how
 #    Can use multiple lines with "-" for bullet points in body
 # --------------------
-# configure git commit template
-# cp commit.template ~/commit.template
-# git config --global commit.template ~/commit.template
+# configure git commit message
+# git config --global commit.template ~/.gitmessage
