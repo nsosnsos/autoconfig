@@ -76,6 +76,8 @@ else
     fi
     sudo cp /etc/letsencrypt/live/${SITE_NAME}/fullchain.pem ${CERT_PATH}/${SITE_NAME}.cert
     sudo cp /etc/letsencrypt/live/${SITE_NAME}/privkey.pem ${CERT_PATH}/${SITE_NAME}.key
+    sudo chown ${CUR_USER}:${CUR_USER} ${CERT_PATH}/${SITE_NAME}.cert
+    sudo chown ${CUR_USER}:${CUR_USER} ${CERT_PATH}/${SITE_NAME}.key
     if type nginx > /dev/null 2>&1 ; then
         sudo service nginx restart
     fi
