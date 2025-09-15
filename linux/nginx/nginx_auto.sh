@@ -10,6 +10,9 @@ CERT_PATH=${HOME_PATH}/cert
 DOMAIN_CONF_FILE=nginx_domain.conf
 IP_CONF_FILE=nginx_ip.conf
 WEB_NAME=hallelujah
+CERT=cert.pem
+FULLCHAIN=fullchain.pem
+PRIVKEY=privkey.pem
 
 ### Check script parameters
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
@@ -33,12 +36,13 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
             exit -1
         fi
     fi
-elif [[ ${#} -eq 1 && ${1} == "uninstall" ]]; then
+elif [[ ${#} -eq 2 && ${1} == "uninstall" ]]; then
     if type nginx > /dev/null 2>&1 ; then
+        SITE_NAME=${2}
         echo "uninstalling nginx ..."
         sudo apt purge nginx-* -y
         sudo apt autoremove -y
-        bash ${SCRIPT_PATH}/cert_auto.sh uninstall
+        bash ${SCRIPT_PATH}/cert_auto.sh uninstall ${SITE_NAME}
         sudo rm -rf ${CERT_PATH}
         exit 0
     else
@@ -51,13 +55,14 @@ else
 fi
 
 ### Automated certificate generation and update
-if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
+if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.${CERT} || ! -f ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} || ! -f ${CERT_PATH}/${SITE_NAME}.${PRIVKEY} ]]; then
     echo "Generating certificate ..."
     mkdir -p ${CERT_PATH}
     if [[ ${DOMAIN_CONFIG} -eq 1 ]]; then
         bash ${SCRIPT_PATH}/cert_auto.sh install ${CERT_PATH} ${SITE_NAME}
     else
-        openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.cert -keyout ${CERT_PATH}/${SITE_NAME}.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+        openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} -keyout ${CERT_PATH}/${SITE_NAME}.${PRIVKEY} -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@test.com"
+        cp ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} ${CERT_PATH}/${SITE_NAME}.${CERT}
     fi
 fi
 
@@ -76,7 +81,7 @@ if [ -f ${NGINX_PATH}/sites-enabled/${SITE_NAME} ]; then
 fi
 sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
 if ! grep -Fq "ssl_certificate" ${NGINX_PATH}/nginx.conf; then
-    sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_certificate ${CERT_PATH}/${SITE_NAME}.cert;\n\tssl_certificate_key ${CERT_PATH}/${SITE_NAME}.key;|g" ${NGINX_PATH}/nginx.conf
+    sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_trusted_certificate ${CERT_PATH}/${SITE_NAME}.${CERT};\n\tssl_certificate ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN};\n\tssl_certificate_key ${CERT_PATH}/${SITE_NAME}.${PRIVKEY};|g" ${NGINX_PATH}/nginx.conf
 fi
 if ! grep -Fq "client_max_body_size" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|sendfile on;|sendfile on;\n\tclient_max_body_size 1024M;|g" ${NGINX_PATH}/nginx.conf
@@ -84,8 +89,9 @@ fi
 sudo sed -i "s|SITE_NAME|${SITE_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|WEB_NAME|${WEB_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_PATH|${HOST_PATH}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i "s|SITE_CERT|${CERT_PATH}/${SITE_NAME}.cert|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i "s|SITE_KEY|${CERT_PATH}/${SITE_NAME}.key|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_CERT|${CERT_PATH}/${SITE_NAME}.${CERT}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_FULLCHAIN|${CERT_PATH}/${SITE_NAME}.${FULLCHAIN}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
+sudo sed -i "s|SITE_PRIVKEY|${CERT_PATH}/${SITE_NAME}.${PRIVKEY}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo ln -s ${NGINX_PATH}/sites-available/${SITE_NAME} ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 sudo systemctl restart nginx
 

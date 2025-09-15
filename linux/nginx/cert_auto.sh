@@ -7,6 +7,9 @@ HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 CERT_SVC=certbot
+CERT=cert.pem
+FULLCHAIN=fullchain.pem
+PRIVKEY=privkey.pem
 
 function cron_add () {
     read -p "input cert path: " CERT_PATH
@@ -27,11 +30,14 @@ function cron_add () {
 function cron_job () {
     CERT_PATH=${1}
     SITE_NAME=${2}
-    if [ -f ${CERT_PATH}/${SITE_NAME}.cert ]; then
-        mv -f ${CERT_PATH}/${SITE_NAME}.cert ${CERT_PATH}/${SITE_NAME}.cert.bak
+    if [ -f ${CERT_PATH}/${SITE_NAME}.${CERT} ]; then
+        mv -f ${CERT_PATH}/${SITE_NAME}.${CERT} ${CERT_PATH}/${SITE_NAME}.${CERT}.bak
     fi
-    if [ -f ${CERT_PATH}/${SITE_NAME}.key ]; then
-        mv -f ${CERT_PATH}/${SITE_NAME}.key ${CERT_PATH}/${SITE_NAME}.key.bak
+    if [ -f ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} ]; then
+        mv -f ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN}.bak
+    fi
+    if [ -f ${CERT_PATH}/${SITE_NAME}.${PRIVKEY} ]; then
+        mv -f ${CERT_PATH}/${SITE_NAME}.${PRIVKEY} ${CERT_PATH}/${SITE_NAME}.${PRIVKEY}.bak
     fi
     sudo rm -rf /etc/letsencrypt
     ${SCRIPT_PATH}/${SCRIPT_NAME} install ${CERT_PATH} ${SITE_NAME}
@@ -62,7 +68,7 @@ else
     exit -1
 fi
 
-if [[ -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
+if [[ -f ${CERT_PATH}/${SITE_NAME}.${CERT} ]]; then
     echo "You have already have the certificate, no need to generate again."
     exit 0
 else
@@ -74,10 +80,10 @@ else
     if [[ ! -d ${CERT_PATH} ]]; then
         mkdir -p ${CERT_PATH}
     fi
-    sudo cp /etc/letsencrypt/live/${SITE_NAME}/fullchain.pem ${CERT_PATH}/${SITE_NAME}.cert
-    sudo cp /etc/letsencrypt/live/${SITE_NAME}/privkey.pem ${CERT_PATH}/${SITE_NAME}.key
-    sudo chown ${CUR_USER}:${CUR_USER} ${CERT_PATH}/${SITE_NAME}.cert
-    sudo chown ${CUR_USER}:${CUR_USER} ${CERT_PATH}/${SITE_NAME}.key
+    sudo cp /etc/letsencrypt/live/${SITE_NAME}/${CERT} ${CERT_PATH}/${SITE_NAME}.${CERT}
+    sudo cp /etc/letsencrypt/live/${SITE_NAME}/${FULLCHAIN} ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN}
+    sudo cp /etc/letsencrypt/live/${SITE_NAME}/${PRIVKEY} ${CERT_PATH}/${SITE_NAME}.${PRIVKEY}
+    sudo chown ${CUR_USER}:${CUR_USER} ${CERT_PATH}/${SITE_NAME}.*
     if type nginx > /dev/null 2>&1 ; then
         sudo service nginx restart
     fi
@@ -87,6 +93,6 @@ fi
 #if [[ ! -d ${CERT_PATH} || ! -f ${CERT_PATH}/${SITE_NAME}.key || ! -f ${CERT_PATH}/${SITE_NAME}.cert ]]; then
 #    echo "Generating self signed certificate ..."
 #    mkdir -p ${CERT_PATH}
-#    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.cert -keyout ${CERT_PATH}/${SITE_NAME}.key -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@gmail.com"
+#    openssl req -x509 -newkey rsa:4096 -nodes -out ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN} -keyout ${CERT_PATH}/${SITE_NAME}.${PRIVKEY} -days 9999 -subj "/C=US/ST=California/L=SanJose/O=Global Security/OU=IT Department/CN=test@test.com"
 #fi
 
