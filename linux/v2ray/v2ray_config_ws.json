@@ -5,22 +5,23 @@
     "error": "/var/log/v2ray/error.log"
   },
   "inbounds": [{
-    "listen": "0.0.0.0",
     "port": 4300,
     "protocol": "vmess",
     "settings": {
-      "clients": [
-        {
-          "id": "00000000-0000-0000-0000-000000000000",
-          "level": 1,
-          "alterId": 0
-        }
-      ]
+      "clients": [{
+        "id": "00000000-0000-0000-0000-000000000000",
+        "level": 0,
+        "alterId": 0
+      }]
     },
     "streamSettings": {
       "network": "ws",
+      "security": "none",
       "wsSettings": {
-          "path": "/ws"
+        "path": "/ws",
+        "headers": {
+          "Host": "SITE_NAME"
+        }
       }
     }
   }],

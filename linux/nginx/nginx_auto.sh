@@ -80,6 +80,9 @@ if [ -f ${NGINX_PATH}/sites-enabled/${SITE_NAME} ]; then
     sudo rm ${NGINX_PATH}/sites-enabled/${SITE_NAME}
 fi
 sudo cp ${SITE_CONF_FILE} ${NGINX_PATH}/sites-available/${SITE_NAME}
+if grep -Fq "ssl_protocols" ${NGINX_PATH}/nginx.conf; then
+    sudo sed -i "s|ssl_protocols .*|ssl_protocols TLSv1.2 TLSv1.3;|" ${NGINX_PATH}/nginx.conf
+fi
 if ! grep -Fq "ssl_certificate" ${NGINX_PATH}/nginx.conf; then
     sudo sed -i "s|ssl_prefer_server_ciphers on;|ssl_prefer_server_ciphers on;\n\tssl_trusted_certificate ${CERT_PATH}/${SITE_NAME}.${CERT};\n\tssl_certificate ${CERT_PATH}/${SITE_NAME}.${FULLCHAIN};\n\tssl_certificate_key ${CERT_PATH}/${SITE_NAME}.${PRIVKEY};|g" ${NGINX_PATH}/nginx.conf
 fi

@@ -8,13 +8,11 @@
     "port": 4300,
     "protocol": "vmess",
     "settings": {
-      "clients": [
-        {
-          "id": "00000000-0000-0000-0000-000000000000",
-          "level": 1,
-          "alterId": 0
-        }
-      ]
+      "clients": [{
+        "id": "00000000-0000-0000-0000-000000000000",
+        "level": 0,
+        "alterId": 0
+      }]
     }
   }],
   "outbounds": [
