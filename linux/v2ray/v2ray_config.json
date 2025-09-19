@@ -13,6 +13,16 @@
         "level": 0,
         "alterId": 0
       }]
+    },
+    "streamSettings": {
+      "network": "ws",
+      "security": "none",
+      "wsSettings": {
+        "path": "/ws",
+        "headers": {
+          "Host": "SITE_NAME"
+        }
+      }
     }
   }],
   "outbounds": [

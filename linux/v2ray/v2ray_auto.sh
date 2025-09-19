@@ -9,8 +9,7 @@ SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 WORK_DIR=workspace
 V2RAY_REPO=fhs-install-v2ray
 V2RAY_DIR=${HOME_PATH}/${WORK_DIR}/${V2RAY_REPO}
-V2RAY_IP_CONF=v2ray_config.json
-V2RAY_DOMAIN_CONF=v2ray_config_ws.json
+V2RAY_CONF=v2ray_config.json
 
 if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     if type v2ray > /dev/null 2>&1 ; then
@@ -19,9 +18,9 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     else
         SITE_NAME=${2}
         if [[ "${SITE_NAME}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
-            CONF_FILE=${SCRIPT_PATH}/${V2RAY_IP_CONF}
+            CONF_FILE=${SCRIPT_PATH}/${V2RAY_CONF}
         else
-            CONF_FILE=${SCRIPT_PATH}/${V2RAY_DOMAIN_CONF}
+            CONF_FILE=${SCRIPT_PATH}/${V2RAY_CONF}
         fi
         if [ ! -f ${CONF_FILE} ]; then
             echo "There is no v2ray config file [${CONF_FILE}] !!!"

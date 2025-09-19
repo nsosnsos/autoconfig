@@ -7,8 +7,7 @@ HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
 CERT_PATH=${HOME_PATH}/cert
-DOMAIN_CONF_FILE=nginx_domain.conf
-IP_CONF_FILE=nginx_ip.conf
+SITE_CONF_FILE=nginx_site.conf
 WEB_NAME=hallelujah
 CERT=cert.pem
 FULLCHAIN=fullchain.pem
@@ -22,10 +21,8 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
     else
         SITE_NAME=${2}
         if [[ "${SITE_NAME}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
-            SITE_CONF_FILE=${SCRIPT_PATH}/${IP_CONF_FILE}
             DOMAIN_CONFIG=0
         else
-            SITE_CONF_FILE=${SCRIPT_PATH}/${DOMAIN_CONF_FILE}
             DOMAIN_CONFIG=1
         fi
         NGINX_PATH=/etc/nginx
