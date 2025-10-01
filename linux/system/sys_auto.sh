@@ -88,7 +88,7 @@ fi
 
 ### Update and install software
 sudo apt update -y && sudo apt full-upgrade -y
-sudo apt install -y net-tools ntpdate openssl python3-virtualenv tree
+sudo apt install -y net-tools ntpdate openssl python3-virtualenv tree iptables
 
 ### Set timezone and synchronize with ntp server
 sudo ntpdate -u ntp.ubuntu.com
