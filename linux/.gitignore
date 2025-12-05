@@ -18,5 +18,6 @@
 *.ini
 *.patch
 *.log
+*.log.*
 *.pyc
 __pycache__/
