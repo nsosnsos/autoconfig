@@ -132,8 +132,7 @@ sudo systemctl start cron
 sudo systemctl enable cron
 
 ### Set journal log
-sudo apt clean && sudo apt autoremove --purge
-sudo snap set system refresh.retain=2
+sudo apt clean && sudo apt autoremove --purge -y
 sudo journalctl --vacuum-size=100M
 sudo journalctl --vacuum-time=3d
 
