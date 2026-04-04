@@ -6,13 +6,14 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+source ${SCRIPT_PATH}/../../logging.sh
 
 
 function usage() {
-	echo "Usage: ${SCRIPT_NAME} [32|64]"
-	echo "       This is linux kernel build script for raspberry 4b model."
-	echo "       You may specify 32-bit or 64-bit build configuration for linux kernel."
-	echo "       If it is not specified, it would be a 64-bit build configuration."
+	log_error "Usage: ${SCRIPT_NAME} [32|64]"
+	log_error "       This is linux kernel build script for raspberry 4b model."
+	log_error "       You may specify 32-bit or 64-bit build configuration for linux kernel."
+	log_error "       If it is not specified, it would be a 64-bit build configuration."
 }
 
 # set source path
@@ -32,7 +33,8 @@ elif [[ ${#} -eq 0 || (${#} -eq 1 && ${1} -eq 64) ]]; then
     DTS_DTB="broadcom/"
 else
 	usage
-	exit -1
+	log_error "Invalid arguments"
+	exit 1
 fi
 
 # clone source

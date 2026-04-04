@@ -1,26 +1,52 @@
 #!/usr/bin/env bash
+set -e
 
 #USAGE: diffstat.sh [A] [B]
 
-if [ ! $2 ]; then
-    printf "\n    Usage: diffstat.sh A B\n\n"
-    exit
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source ${SCRIPT_PATH}/../linux/logging.sh
+
+if [ $# -ne 2 ]; then
+    log_error "Usage: diffstat.sh A B"
+    exit 1
 fi
+
+if [ ! -d "$1" ]; then
+    log_error "Directory '$1' does not exist"
+    exit 1
+fi
+
+if [ ! -d "$2" ]; then
+    log_error "Directory '$2' does not exist"
+    exit 1
+fi
+
+log_info "Comparing directories: $1 vs $2"
 
 logfile=/tmp/diffstat.log
 
-diff -Npur --exclude=".ci" --exclude=".git" --exclude=".github" --exclude="build" --exclude="lib" --exclude="contrib" --exclude="README*" --exclude=".gitignore" "$1" "$2" > "$logfile"
-add_lines=`cat "$logfile" | grep ^+ | wc -l`
-del_lines=`cat "$logfile" | grep ^- | wc -l`
-at_lines=`cat "$logfile" | grep ^@ | wc -l`
-all_lines=`cat "$logfile" | wc -l`
-mod_lines=`expr $all_lines - $add_lines - $del_lines - $at_lines`
-total_lines=`expr $mod_lines + $add_lines - 1 + $del_lines - 1`
+log_debug "Running diff command..."
+if ! diff -Npur --exclude=".ci" --exclude=".git" --exclude=".github" --exclude="build" --exclude="lib" --exclude="contrib" --exclude="README*" --exclude=".gitignore" "$1" "$2" > "$logfile"; then
+    log_error "diff command failed"
+    exit 1
+fi
 
-printf "Total added lines:    %10s\n" "$add_lines"
-printf "Total deleted lines:  %10s\n" "$del_lines"
-printf "Total modified lines: %10s\n" "$mod_lines"
-printf "Total changed lines:  %10s\n" "$total_lines"
+log_debug "Analyzing diff results..."
+add_lines=$(cat "$logfile" | grep ^+ | wc -l)
+del_lines=$(cat "$logfile" | grep ^- | wc -l)
+at_lines=$(cat "$logfile" | grep ^@ | wc -l)
+all_lines=$(cat "$logfile" | wc -l)
+mod_lines=$(expr $all_lines - $add_lines - $del_lines - $at_lines)
+total_lines=$(expr $mod_lines + $add_lines - 1 + $del_lines - 1)
+
+log_info "Diff analysis completed:"
+printf "  Total added lines:    %10s\n" "$add_lines"
+printf "  Total deleted lines:  %10s\n" "$del_lines"
+printf "  Total modified lines: %10s\n" "$mod_lines"
+printf "  Total changed lines:  %10s\n" "$total_lines"
+
+rm -f "$logfile"
+log_debug "Temporary log file cleaned up"
 
 :'
 find ompi -name '*.inl' -o -name '*.h' -o -name '*.hxx' -o -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '.java' -o -name '*.sh' -o -name '*.am' -o -name '*.m4' | xargs wc -l | grep ' total'

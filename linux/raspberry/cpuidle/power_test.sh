@@ -6,11 +6,12 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+source ${SCRIPT_PATH}/../../logging.sh
 
 
 function usage() {
-	echo "Usage: ${SCRIPT_NAME}"
-	echo "       This is linux power test script for raspberry 4b model building linux kernel."
+	log_error "Usage: ${SCRIPT_NAME}"
+	log_error "       This is linux power test script for raspberry 4b model building linux kernel."
 }
 
 # set source path
@@ -30,7 +31,8 @@ elif [[ ${#} -eq 0 || (${#} -eq 1 && ${1} -eq 64) ]]; then
     DTS_DTB="broadcom/"
 else
 	usage
-	exit -1
+	log_error "Invalid arguments"
+	exit 1
 fi
 
 # start time

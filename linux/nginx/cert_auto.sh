@@ -6,6 +6,7 @@ CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+source ${SCRIPT_PATH}/../logging.sh
 CERT_SVC=certbot
 CERT=cert.pem
 FULLCHAIN=fullchain.pem
@@ -63,9 +64,9 @@ elif [[ ${#} -ge 1 && ${1} == "cron" ]]; then
     fi
     exit 0
 else
-    echo "Usage:     ${SCRIPT_NAME} install/uninstall CERT_PATH SITE_NAME"
-    echo "Attention: certificate generation succeed only if nginx is not installed or not running."
-    exit -1
+    log_error "Usage: ${SCRIPT_NAME} install/uninstall CERT_PATH SITE_NAME"
+    log_error "Attention: certificate generation succeed only if nginx is not installed or not running."
+    exit 1
 fi
 
 if [[ -f ${CERT_PATH}/${SITE_NAME}.${CERT} ]]; then
