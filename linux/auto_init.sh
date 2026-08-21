@@ -4,8 +4,8 @@ set -e
 
 CUR_USER=$(whoami)
 HOME_PATH=$(eval echo ~${CUR_USER})
-SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-SCRIPT_NAME=$(basename $(readlink -f "${0}"))
+SCRIPT_PATH=$(dirname $(readlink -f "${BASH_SOURCE[0]}"))
+SCRIPT_NAME=$(basename $(readlink -f "${BASH_SOURCE[0]}"))
 source ${SCRIPT_PATH}/logging.sh
 
 
