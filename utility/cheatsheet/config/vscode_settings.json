@@ -1,0 +1,18 @@
+{
+    "python.createEnvironment.trigger": "off",
+    "ruff.lineLength": 120,
+    "pylint.importStrategy": "fromEnvironment",
+    "python.analysis.extraPaths": [
+        "${HOME}/.python_env/lib/python3.12/site-packages" 
+    ],
+
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "always",
+            "source.organizeImports.ruff": "always"
+        }
+    },
+    "python.formatting.provider": "none",
+}
