@@ -45,9 +45,7 @@ echo "gpg --keyserver keyserver.ubuntu.com --recv-keys 123456789"
 echo "gpg --export --armor 123456789 | sudo apt-key add -"
 
 ### update and upgrade
-sudo apt update -y && sudo apt full-upgrade -y
-sudo apt autoremove -y
-sudo apt autopurge -y
+sudo apt update && sudo apt full-upgrade -y && sudo apt autopurge -y
 
 ### install necessary software
 sudo apt --reinstall install -y libraspberrypi-bin
@@ -162,7 +160,6 @@ if ! service --status-all | grep -Fq 'v2raya'; then
     sudo systemctl disable v2ray --now
     wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/trusted.gpg.d/v2raya.asc
     echo "deb https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
-    sudo apt update -y
     sudo apt install v2raya -y
     sudo systemctl enable v2raya.service
     sudo systemctl start v2raya.service

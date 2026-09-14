@@ -177,7 +177,6 @@ sudo systemctl restart vsftpd
 
 echo "===== docker installation ====="
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-apt update
 apt install docker-engine
 systemctl enable docker
 service docker start

@@ -95,7 +95,7 @@ fi
 
 ### Update and install software
 log_info "Updating system packages..."
-log_exec "sudo apt update -y && sudo apt full-upgrade -y"
+log_exec "sudo apt update && sudo apt full-upgrade -y && sudo apt autopurge -y"
 log_exec "sudo apt install -y net-tools ntpdate openssl python3-virtualenv tree iptables"
 
 ### Set timezone and synchronize with ntp server
