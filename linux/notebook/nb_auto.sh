@@ -80,7 +80,6 @@ echo "[Unit]
 Description=Jupyter Notebook
 [Service]
 Type=simple
-PIDFile=/run/notebook.pid
 ExecStart=${NOTEBOOK_ENV_PATH}/bin/jupyter-notebook --config=${NOTEBOOK_CONFIG_FILE}
 User=${CUR_USER}
 Group=${CUR_USER}
@@ -88,7 +87,7 @@ WorkingDirectory=${NOTEBOOK_WORK_PATH}
 Restart=always
 RestartSec=10
 [Install]
-WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /dev/null > /dev/null
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/notebook.service > /dev/null
 
 log_exec "sudo systemctl daemon-reload"
 log_exec "sudo systemctl enable notebook"
