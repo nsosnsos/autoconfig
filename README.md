@@ -5,3 +5,4 @@
 * Additionally, bigdata config, chatgpt, data analysis, code diff stats and directory batch operations are also provided as utilities.
 * cheatsheet about mysql and python are also available.
 
+* Deployment: `sudo bash linux/auto_init.sh install [DOMAIN_NAME|IP_ADDRESS]`

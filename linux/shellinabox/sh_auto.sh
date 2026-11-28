@@ -36,7 +36,7 @@ log_info "configuring shellinabox..."
 echo "# Should shellinaboxd start automatically
 SHELLINABOX_DAEMON_START=1
 # TCP port that shellinboxd's webserver listens on
-SHELLINABOX_PORT=4200
+SHELLINABOX_PORT=7700
 # Any optional arguments (e.g. extra service definitions). Make sure
 # that that argument is quoted.
 #

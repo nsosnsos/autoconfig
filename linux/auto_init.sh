@@ -22,6 +22,7 @@ function auto_uninstall () {
     bash ${SCRIPT_PATH}/mariadb/mariadb_auto.sh ${1}
     bash ${SCRIPT_PATH}/notebook/nb_auto.sh ${1}
     bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${1}
+    bash ${SCRIPT_PATH}/xray/xray_auto.sh ${1}
     bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh ${1}
     bash ${SCRIPT_PATH}/nginx/nginx_auto.sh ${1}
     bash ${SCRIPT_PATH}/system/sys_auto.sh ${1}
@@ -64,6 +65,10 @@ bash ${SCRIPT_PATH}/shellinabox/sh_auto.sh ${1}
 ### Install and config v2ray
 log_info "Installing and configuring v2ray..."
 bash ${SCRIPT_PATH}/v2ray/v2ray_auto.sh ${1} ${SITE_NAME}
+
+### Install and config xray
+log_info "Installing and configuring xray..."
+bash ${SCRIPT_PATH}/xray/xray_auto.sh ${1} ${SITE_NAME}
 
 ### Install and config jupyter notebook
 log_info "Installing and configuring jupyter notebook..."

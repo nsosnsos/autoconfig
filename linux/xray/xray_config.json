@@ -1,0 +1,64 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log"
+  },
+  "inbounds": [
+    {
+      "tag": "vless-reality-in",
+      "listen": "0.0.0.0",
+      "port": 9990,
+      "protocol": "vless",
+      "settings": {
+        "clients": [{"id": "__UUID__", "flow": "xtls-rprx-vision"}],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "target": "www.microsoft.com:443",
+          "xver": 0,
+          "serverNames": ["www.microsoft.com"],
+          "privateKey": "__REALITY_PRIVATE_KEY__",
+          "shortIds": ["__REALITY_SHORT_ID__"]
+        }
+      }
+    },
+    {
+      "tag": "hysteria2-in",
+      "listen": "0.0.0.0",
+      "port": 9999,
+      "protocol": "hysteria",
+      "settings": {
+        "version": 2,
+        "users": [{"auth": "__HY2_PASSWORD__", "level": 0, "email": "autoconfig-hysteria2"}]
+      },
+      "streamSettings": {
+        "method": "hysteria",
+        "security": "tls",
+        "hysteriaSettings": {"version": 2},
+        "tlsSettings": {
+          "alpn": ["h3"],
+          "certificates": [{
+            "certificateFile": "__CERT_FILE__",
+            "keyFile": "__KEY_FILE__"
+          }]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {"protocol": "freedom", "settings": {}, "tag": "allowed"},
+    {"protocol": "blackhole", "settings": {}, "tag": "blocked"}
+  ],
+  "routing": {
+    "rules": [{
+      "type": "field",
+      "ip": ["geoip:private"],
+      "outboundTag": "blocked"
+    }]
+  }
+}

@@ -8,8 +8,7 @@ SCRIPT_PATH=$(dirname $(readlink -f "${BASH_SOURCE[0]}"))
 SCRIPT_NAME=$(basename $(readlink -f "${BASH_SOURCE[0]}"))
 source ${SCRIPT_PATH}/../logging.sh
 CERT_PATH=${HOME_PATH}/cert
-SITE_CONF_FILE=${SCRIPT_PATH}/nginx_site.conf
-WEB_NAME=hallelujah
+SITE_CONF_FILE=${SCRIPT_PATH}/nginx.conf
 CERT=cert.pem
 FULLCHAIN=fullchain.pem
 PRIVKEY=privkey.pem
@@ -29,7 +28,7 @@ if [[ ${#} -eq 2 && ${1} == "install" ]]; then
         NGINX_PATH=/etc/nginx
         WORK_DIR=workspace
         if [ ! -f ${SITE_CONF_FILE} ]; then
-            log_error "There is no nginx site config file"
+            log_error "There is no nginx config file"
             exit 1
         fi
     fi
@@ -95,7 +94,6 @@ if ! grep -Fq "client_max_body_size" ${NGINX_PATH}/nginx.conf; then
 fi
 log_debug "Configuring nginx site..."
 sudo sed -i "s|SITE_NAME|${SITE_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
-sudo sed -i "s|WEB_NAME|${WEB_NAME}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_PATH|${HOST_PATH}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_CERT|${CERT_PATH}/${SITE_NAME}.${CERT}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}
 sudo sed -i "s|SITE_FULLCHAIN|${CERT_PATH}/${SITE_NAME}.${FULLCHAIN}|g" ${NGINX_PATH}/sites-available/${SITE_NAME}

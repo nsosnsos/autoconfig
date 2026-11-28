@@ -52,7 +52,7 @@ log_debug "Generating jupyter notebook configuration..."
 echo "y" | jupyter notebook --generate-config
 log_debug "Configuring jupyter notebook settings..."
 sed -i "s|# c.ServerApp.ip = 'localhost'|c.ServerApp.ip = '0.0.0.0'|g" ${NOTEBOOK_CONFIG_FILE}
-sed -i "s|# c.ServerApp.port = 0|c.ServerApp.port = 4400|g" ${NOTEBOOK_CONFIG_FILE}
+sed -i "s|# c.ServerApp.port = 0|c.ServerApp.port = 8800|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.base_url = '/'|c.ServerApp.base_url = '/nb'|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.allow_origin = ''|c.ServerApp.allow_origin = '*'|g" ${NOTEBOOK_CONFIG_FILE}
 sed -i "s|# c.ServerApp.tornado_settings = {}|c.ServerApp.tornado_settings = {\"websocket_max_message_size\": 1024 * 1024 * 1024}|g" ${NOTEBOOK_CONFIG_FILE}

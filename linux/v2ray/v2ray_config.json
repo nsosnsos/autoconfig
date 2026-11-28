@@ -5,7 +5,8 @@
     "error": "/var/log/v2ray/error.log"
   },
   "inbounds": [{
-    "port": 4300,
+    "listen": "127.0.0.1",
+    "port": 9900,
     "protocol": "vmess",
     "settings": {
       "clients": [{
